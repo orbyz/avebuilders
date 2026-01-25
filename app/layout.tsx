@@ -1,11 +1,6 @@
-import "./globals.css";
-import Navigation from "./components/Navigation";
-import Footer from "./components/Footer";
-
 export const metadata = {
-  title: "AVE Builders | Reformas profesionales sin sorpresas",
-  description:
-    "Empresa de reformas integrales, baños, cocinas, electricidad y mantenimiento. Presupuesto claro y gestión profesional.",
+  title: "AveBuilders",
+  description: "Reformas de calidad",
 };
 
 export default function RootLayout({
@@ -15,11 +10,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body>
-        <Navigation />
-        {children}
-        <Footer />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
