@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/db";
-import Lead from "@/lib/models/Lead";
+import { connectDB } from "@/app/lib/db";
+import Lead from "@/app/lib/models/Lead";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
