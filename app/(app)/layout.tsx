@@ -1,16 +1,14 @@
-export const metadata = {
-  title: "AveBuilders",
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "AveBuilders Profesionales",
   description: "Reformas de calidad",
 };
 
-export default function RootLayout({
+export default function ProfesionalLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="es">
-      <body>{children}</body>
-    </html>
-  );
+  return <section>{children}</section>;
 }

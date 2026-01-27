@@ -2,6 +2,8 @@ Nombre del proyecto: AVE Builders
 Responsable: OrByZ DeV
 Lugar: España 🇪🇸
 
+Font: Playfair Display (https://fonts.google.com/specimen/Playfair+Display?preview.text=AVE%20Builders)
+
 Estructura del proyecto 🚀
 # Para no olvidar nada importante
 
