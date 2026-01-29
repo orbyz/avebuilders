@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import clientPromise from "@/app/lib/mongodb";
-import User from "@/app/lib/models/User";
+import connectDB from "@/lib/mongoose";
+import User from "@/lib/models/User";
 import bcrypt from "bcryptjs";
 
 const handler = NextAuth({
@@ -17,7 +17,7 @@ const handler = NextAuth({
           throw new Error("Credenciales inválidas");
         }
 
-        await clientPromise();
+        await connectDB();
 
         const user = await User.findOne({ email: credentials.email });
 
@@ -52,13 +52,13 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        token.role = (user as any).role;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) {
-        session.user.role = token.role as string;
+      if (session.user) {
+        (session.user as any).role = token.role;
       }
       return session;
     },
