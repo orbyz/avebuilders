@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { connectDB } from "@/app/lib/mongodb";
+import clientPromise from "@/app/lib/mongodb";
 import User from "@/app/lib/models/User";
 import bcrypt from "bcryptjs";
 
@@ -17,7 +17,7 @@ const handler = NextAuth({
           throw new Error("Credenciales inválidas");
         }
 
-        await connectDB();
+        await clientPromise();
 
         const user = await User.findOne({ email: credentials.email });
 
