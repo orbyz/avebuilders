@@ -1,55 +1,21 @@
-import mongoose from "mongoose";
-
-const MONGODB_URI = process.env.MONGODB_URI!;
-
-if (!MONGODB_URI) {
-  throw new Error("Por favor define la variable de entorno MONGODB_URI");
-}
-
-interface MongooseCache {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
-}
-
-declare global {
-  var mongoose: MongooseCache | undefined;
-}
-
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
-export async function connectDB() {
-  if (cached?.conn) {
-    return cached.conn;
-  }
-
-  if (!cached?.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
-  }
-
-  try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
-  }
-
-  return cached.conn;
-}
+import { NextResponse } from "next/server";
+import connectDB from "@/lib/mongoose";
+import Lead from "@/lib/models/Lead";
 
 export async function POST(req: Request) {
-  await connectDB();
-  const data = await req.json();
-  const lead = await Lead.create(data);
+  try {
+    await connectDB();
 
-  return NextResponse.json({ success: true, lead });
+    const body = await req.json();
+
+    const lead = await Lead.create(body);
+
+    return NextResponse.json({ success: true, lead });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { success: false, message: "Error al guardar lead" },
+      { status: 500 },
+    );
+  }
 }
