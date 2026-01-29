@@ -1,14 +1,12 @@
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 
-const uri = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!uri) {
+if (!MONGODB_URI) {
   throw new Error("❌ MONGODB_URI no está definido");
 }
 
-/**
- * Cache global para evitar múltiples conexiones en desarrollo
- */
+// Cache global (necesario para Next.js + Vercel)
 let cached = (global as any).mongoose;
 
 if (!cached) {
