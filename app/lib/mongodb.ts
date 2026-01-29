@@ -1,9 +1,28 @@
-/** import mongoose from "mongoose";
+import { MongoClient } from "mongodb";
 
-const MONGODB_URI = process.env.MONGODB_URI!;
+const uri = process.env.MONGODB_URI;
 
-export const connectDB = async () => {
-  if (mongoose.connection.readyState >= 1) return;
+if (!uri) {
+  throw new Error("❌ MONGODB_URI no está definido en .env.local");
+}
 
-  return mongoose.connect(MONGODB_URI);
-};
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
+
+declare global {
+  // Permite reutilizar la conexión en desarrollo
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
+}
+
+if (process.env.NODE_ENV === "development") {
+  if (!global._mongoClientPromise) {
+    client = new MongoClient(uri);
+    global._mongoClientPromise = client.connect();
+  }
+  clientPromise = global._mongoClientPromise;
+} else {
+  client = new MongoClient(uri);
+  clientPromise = client.connect();
+}
+
+export default clientPromise;
