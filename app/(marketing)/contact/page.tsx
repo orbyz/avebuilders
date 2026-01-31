@@ -25,20 +25,38 @@ export default function ContactoPage() {
     e.preventDefault();
     setStatus("loading");
 
-    await fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    if (!form.name || !form.email || !form.service) {
+      alert("Por favor completa los campos obligatorios");
+      setStatus("idle");
+      return;
+    }
+    // Quitar antes de Deploy
+    console.log("Enviando lead:", form);
 
-    setStatus("success");
-    setForm({
-      name: "",
-      email: "",
-      phone: "",
-      service: "",
-      message: "",
-    });
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        throw new Error("Error al enviar el formulario");
+      }
+
+      setStatus("success");
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo enviar el formulario. Inténtalo más tarde.");
+      setStatus("idle");
+    }
   };
 
   return (

@@ -30,6 +30,8 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts",
     "app/(app)/cliente/layout.bak",
+    "middleware.bak",
+    "scripts/seed-user.js",
   ],
   "exclude": ["node_modules"],
 }

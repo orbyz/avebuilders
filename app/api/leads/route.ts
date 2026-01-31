@@ -2,20 +2,42 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongoose";
 import Lead from "@/lib/models/Lead";
 
-export async function POST(req: Request) {
+/* =========================
+   GET → LISTAR LEADS
+========================= */
+
+export async function GET() {
   try {
     await connectDB();
-
-    const body = await req.json();
-
-    const lead = await Lead.create(body);
-
-    return NextResponse.json({ success: true, lead });
+    const leads = await Lead.find().sort({ createdAt: -1 });
+    return NextResponse.json(leads);
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
-      { success: false, message: "Error al guardar lead" },
+      { error: "Error obteniendo leads" },
       { status: 500 },
     );
+  }
+}
+
+/* =========================
+   POST → CREAR LEAD
+========================= */
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    await connectDB();
+
+    const lead = await Lead.create({
+      name: body.name,
+      email: body.email,
+      phone: body.phone,
+      service: body.service,
+      message: body.message,
+      status: "nuevo",
+    });
+
+    return NextResponse.json(lead, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: "Error creando lead" }, { status: 500 });
   }
 }

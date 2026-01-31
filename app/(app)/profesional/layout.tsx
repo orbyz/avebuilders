@@ -1,32 +1,52 @@
+import { ReactNode } from "react";
+import Link from "next/link";
+
 export default function ProfesionalLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-blackPrimary text-white flex">
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-blackSecondary border-r border-gold/20 p-6">
-        <h2 className="text-xl font-bold text-gold mb-8">AVE Builders</h2>
+    <div className="flex min-h-screen bg-black text-white">
+      {/* Sidebar */}
+      <aside className="w-64 bg-zinc-900 border-r border-zinc-800">
+        <div className="p-6 text-xl font-bold text-yellow-500">
+          AVE Builders
+        </div>
 
-        <nav className="space-y-4 text-sm">
-          <a href="/profesional" className="block hover:text-gold">
+        <nav className="flex flex-col gap-2 px-4">
+          <Link
+            href="/profesional"
+            className="rounded px-3 py-2 hover:bg-zinc-800"
+          >
             Dashboard
-          </a>
-          <a href="/profesional/leads" className="block hover:text-gold">
+          </Link>
+
+          <Link
+            href="/profesional/leads"
+            className="rounded px-3 py-2 hover:bg-zinc-800"
+          >
             Leads
-          </a>
-          <a href="/profesional/proyectos" className="block hover:text-gold">
+          </Link>
+
+          <Link
+            href="/profesional/projects"
+            className="rounded px-3 py-2 hover:bg-zinc-800"
+          >
             Proyectos
-          </a>
-          <a href="/profesional/clientes" className="block hover:text-gold">
-            Clientes
-          </a>
+          </Link>
+
+          <Link
+            href="/profesional/profile"
+            className="rounded px-3 py-2 hover:bg-zinc-800"
+          >
+            Perfil
+          </Link>
         </nav>
       </aside>
 
-      {/* CONTENT */}
-      <main className="flex-1 p-10">{children}</main>
+      {/* Content */}
+      <main className="flex-1 p-8">{children}</main>
     </div>
   );
 }

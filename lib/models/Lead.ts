@@ -1,19 +1,19 @@
-import mongoose, { Schema, models } from "mongoose";
+import mongoose, { Schema, models, model } from "mongoose";
 
 const LeadSchema = new Schema(
   {
-    nombre: String,
-    email: String,
-    telefono: String,
-    tipoReforma: String,
-    descripcion: String,
-    metrosAprox: Number,
-    ubicacion: String,
-    presupuestoEstimado: String,
-    urgencia: String,
-    estado: { type: String, default: "nuevo" },
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    phone: String,
+    service: String,
+    message: String,
+    status: {
+      type: String,
+      enum: ["nuevo", "contactado", "en_proceso", "cerrado"],
+      default: "nuevo",
+    },
   },
   { timestamps: true },
 );
 
-export default models.Lead || mongoose.model("Lead", LeadSchema);
+export default models.Lead || model("Lead", LeadSchema);
