@@ -2,12 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  // 🔓 Bypass en desarrollo
-  if (process.env.NODE_ENV === "development") {
-    return NextResponse.next();
-  }
-
-  // 🔐 Protección real (producción)
+  // Aquí irá la auth real más adelante
   const isLoggedIn = false;
 
   if (!isLoggedIn) {
@@ -16,3 +11,11 @@ export function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+/**
+ * ⛔ SOLO PROTEGEMOS EL DASHBOARD
+ * ✅ Landing pública libre
+ */
+export const config = {
+  matcher: ["/profesional/:path*"],
+};
