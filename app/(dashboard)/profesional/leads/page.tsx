@@ -3,6 +3,8 @@ import connectDB from "@/lib/mongoose";
 import Lead from "@/lib/models/Lead";
 import LeadsTableClient from "@/components/leads/LeadsTableClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function LeadsPage() {
   await connectDB();
   const rawLeads = await Lead.find().sort({ createdAt: -1 }).lean();

@@ -11,6 +11,8 @@ import {
 import connectDB from "@/lib/mongoose";
 import Project from "@/lib/models/Project";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectsPage() {
   await connectDB();
 
