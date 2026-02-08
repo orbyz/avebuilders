@@ -3,6 +3,8 @@ import connectDB from "@/lib/mongoose";
 import Lead from "@/lib/models/Lead";
 import Project from "@/lib/models/Project";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProfesionalDashboard() {
   await connectDB();
 
