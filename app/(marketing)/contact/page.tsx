@@ -60,7 +60,7 @@ export default function ContactoPage() {
   };
 
   return (
-    <main className="bg-blackPrimary text-white">
+    <main className="bg-black pt-11 text-white">
       {/* HERO */}
       <section className="max-w-7xl mx-auto px-6 py-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Contacto</h1>
@@ -143,7 +143,7 @@ export default function ContactoPage() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full bg-goldPrimary text-black font-semibold py-4 rounded-full hover:opacity-90 transition"
+              className="w-full bg-brand-accent text-black font-semibold py-4 rounded-full hover:opacity-90 transition"
             >
               {status === "loading" ? "Enviando..." : "Enviar solicitud"}
             </button>

@@ -1,6 +1,6 @@
 import "@/app/globals.css";
-import Navigation from "@/app/components/ui/(marketing)/Navigation";
-import Footer from "@/app/components/ui/(marketing)/Footer";
+import Navigation from "@/components/ui/(marketing)/Navigation";
+import Footer from "@/components/ui/(marketing)/Footer";
 
 export const metadata = {
   title: "AVE Builders | Reformas profesionales sin sorpresas",

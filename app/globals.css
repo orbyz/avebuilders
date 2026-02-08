@@ -2,14 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-.input {
-    width: 100%;
-    padding: 0.9rem 1rem;
-    border-radius: 0.5rem;
-    color: #111;
-    background: #fff;
-    font-size: 0.95rem;
-}
 html {
     scroll-behavior: smooth;
+}
+
+.input {
+    @apply w-full px-4 py-3 rounded-md bg-white text-slate-900
+         border border-slate-300
+         placeholder-slate-400
+         focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-brand-accent;
 }

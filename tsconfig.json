@@ -29,9 +29,11 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "app/(app)/cliente/layout.bak",
+    "_old/(app)/cliente/layout.bak",
     "middleware.bak",
     "scripts/seed-user.js",
+    "models/Project.bak",
+    "models/Lead.bak",
   ],
   "exclude": ["node_modules"],
 }

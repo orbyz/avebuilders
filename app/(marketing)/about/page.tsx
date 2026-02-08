@@ -1,10 +1,12 @@
+import Link from "next/link";
+
 export default function AboutPage() {
   return (
-    <main className="bg-blackPrimary text-white">
+    <main className="bg-black pt-10 text-white">
       {/* HERO */}
       <section className="max-w-7xl mx-auto px-6 py-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Quiénes somos</h1>
-        <p className="text-grayText max-w-2xl mx-auto">
+        <p className="text-grayText text-xl max-w-2xl mx-auto">
           En AVE Builders gestionamos reformas con una visión clara:
           planificación, transparencia y ejecución profesional de principio a
           fin.
@@ -13,8 +15,10 @@ export default function AboutPage() {
 
       {/* BLOQUE 1 - IDENTIDAD */}
       <section className="max-w-5xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-semibold mb-6">AVE Builders</h2>
-        <p className="text-grayText leading-relaxed">
+        <h2 className="text-3xl font-semibold mb-6 text-brand-accent">
+          AVE Builders
+        </h2>
+        <p className="text-grayText leading-relaxed text-lg">
           Somos una empresa especializada en reformas integrales, rehabilitación
           de espacios y mantenimiento general. Nuestro enfoque se basa en una
           gestión ordenada del proyecto, cuidando cada detalle técnico y
@@ -106,12 +110,12 @@ export default function AboutPage() {
         <p className="text-grayText text-lg mb-8">
           Cuéntanos qué necesitas y te ayudamos a convertirlo en una realidad.
         </p>
-        <a
+        <Link
           href="/contact"
-          className="inline-block bg-goldPrimary text-black font-semibold px-8 py-4 rounded-full hover:opacity-90 transition"
+          className="inline-block bg-brand-accent text-black font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition"
         >
           Contactar
-        </a>
+        </Link>
       </section>
     </main>
   );

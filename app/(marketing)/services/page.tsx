@@ -1,6 +1,6 @@
 export default function ServicesPage() {
   return (
-    <main className="bg-blackPrimary text-white">
+    <main className="bg-black text-white pt-24">
       {/* HERO */}
       <section className="max-w-7xl mx-auto px-6 py-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -17,7 +17,9 @@ export default function ServicesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Servicio */}
           <div className="border border-goldPrimary rounded-2xl p-8">
-            <h3 className="text-xl font-semibold mb-4">Reformas integrales</h3>
+            <h3 className="text-xl font-semibold mb-4 text-brand-accent">
+              Reformas integrales
+            </h3>
             <p className="text-grayText mb-4">
               Gestión completa de reformas de viviendas y locales comerciales,
               coordinando todos los gremios para un resultado coherente y
@@ -29,7 +31,9 @@ export default function ServicesPage() {
           </div>
 
           <div className="border border-goldPrimary rounded-2xl p-8">
-            <h3 className="text-xl font-semibold mb-4">Reformas de baños</h3>
+            <h3 className="text-xl font-semibold mb-4 text-brand-accent">
+              Reformas de baños
+            </h3>
             <p className="text-grayText mb-4">
               Diseño y ejecución de baños modernos, funcionales y duraderos,
               cuidando instalaciones, acabados y tiempos de entrega.
@@ -40,7 +44,9 @@ export default function ServicesPage() {
           </div>
 
           <div className="border border-goldPrimary rounded-2xl p-8">
-            <h3 className="text-xl font-semibold mb-4">Reformas de cocinas</h3>
+            <h3 className="text-xl font-semibold mb-4 text-brand-accent">
+              Reformas de cocinas
+            </h3>
             <p className="text-grayText mb-4">
               Reformamos cocinas priorizando ergonomía, funcionalidad y una
               correcta integración de instalaciones y mobiliario.
@@ -51,7 +57,9 @@ export default function ServicesPage() {
           </div>
 
           <div className="border border-goldPrimary rounded-2xl p-8">
-            <h3 className="text-xl font-semibold mb-4">Fontanería</h3>
+            <h3 className="text-xl font-semibold mb-4 text-brand-accent">
+              Fontanería
+            </h3>
             <p className="text-grayText mb-4">
               Instalaciones nuevas, renovaciones y adecuaciones según normativa,
               con enfoque en seguridad y eficiencia.
@@ -62,7 +70,7 @@ export default function ServicesPage() {
           </div>
 
           <div className="border border-goldPrimary rounded-2xl p-8">
-            <h3 className="text-xl font-semibold mb-4">
+            <h3 className="text-xl font-semibold mb-4 text-brand-accent">
               Mantenimiento general
             </h3>
             <p className="text-grayText mb-4">
@@ -74,7 +82,7 @@ export default function ServicesPage() {
             </p>
           </div>
           <div className="border border-goldPrimary rounded-2xl p-8">
-            <h3 className="text-xl font-semibold mb-4">
+            <h3 className="text-xl font-semibold mb-4 text-brand-accent">
               Constucciones nuevas y estructuras
             </h3>
             <p className="text-grayText mb-4">
@@ -91,7 +99,7 @@ export default function ServicesPage() {
       {/* METODO */}
       <section className="bg-blackSecondary py-20">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-semibold mb-6">
+          <h2 className="text-3xl font-semibold mb-6 text-brand-accent">
             Un enfoque profesional en cada servicio
           </h2>
           <p className="text-grayText max-w-3xl mx-auto">
@@ -105,13 +113,16 @@ export default function ServicesPage() {
 
       {/* CTA */}
       <section className="py-20 text-center">
-        <h2 className="text-3xl font-semibold mb-6">Solicita tu presupuesto</h2>
+        <h2 className="text-3xl font-semibold mb-6 text-brand-accent">
+          Solicita tu presupuesto
+        </h2>
         <p className="text-grayText mb-8">
           Cuéntanos qué necesitas y te asesoramos sin compromiso.
         </p>
         <a
-          href="/contacto"
-          className="inline-block bg-gold text-black font-semibold px-8 py-4 rounded-full hover:opacity-90 transition"
+          href="/contact"
+          className="px-9 w-full bg-brand-accent text-black font-semibold py-4 rounded-lg
+                     hover:brightness-95 transition text-lg"
         >
           Contactar
         </a>
