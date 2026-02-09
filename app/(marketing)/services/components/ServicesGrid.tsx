@@ -30,7 +30,7 @@ export function ServicesGrid() {
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Conoce nuestros servicios
         </h2>
-        <div className="w-64 h-1 bg-brand-accent mx-auto mb-6 rounded-full" />
+        <div className="w-32 h-1 bg-brand-accent mx-auto mb-6 rounded-full" />
         <p className="text-grayText max-w-2xl mx-auto">
           Ofrecemos servicios de construcción y reformas para viviendas y
           locales, adaptados a proyectos residenciales.
