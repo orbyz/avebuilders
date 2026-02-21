@@ -4,7 +4,7 @@ import { signOut } from "next-auth/react";
 
 export default function AppHeader() {
   return (
-    <header className="flex h-14 items-center justify-between border-b border-app-border bg-app-surface px-6">
+    <header className="flex h-14 items-center justify-between border-b border-app-border bg-app-surface px-6 print:hidden">
       <span className="font-semibold text-app-accent">AVE Builders</span>
 
       <button

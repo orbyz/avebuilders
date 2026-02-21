@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import connectDB from "@/lib/mongoose";
-import User from "@/lib/models/User";
+import connectDB from "@/lib/db/mongoose";
+import User from "@/lib/modules/users/model";
 import bcrypt from "bcryptjs";
 
 const handler = NextAuth({

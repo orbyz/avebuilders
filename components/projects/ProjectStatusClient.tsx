@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/components/ui/toast";
@@ -14,6 +15,7 @@ export default function ProjectStatusClient({
   const [status, setStatus] = useState(initialStatus);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const router = useRouter();
 
   async function changeStatus(newStatus: string) {
     setLoading(true);
@@ -27,6 +29,8 @@ export default function ProjectStatusClient({
     if (res.ok) {
       setStatus(newStatus);
       setToast("Estado del proyecto actualizado");
+
+      router.refresh();
     } else {
       setToast("Error al actualizar el estado");
     }

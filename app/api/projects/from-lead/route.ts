@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/mongoose";
-import Project from "@/lib/models/Project";
-import Lead from "@/lib/models/Lead";
+import connectDB from "@/lib/db/mongoose";
+import Project from "@/lib/modules/projects/model";
+import Lead from "@/lib/modules/leads/model";
 
 export async function POST(req: NextRequest) {
   await connectDB();
@@ -19,6 +19,19 @@ export async function POST(req: NextRequest) {
     email: lead.email,
     phone: lead.phone,
     service: lead.service,
+
+    status: "activo",
+
+    gallery: {
+      before: [],
+      process: [],
+      after: [],
+    },
+
+    coverImage: "",
+    year: new Date().getFullYear(),
+    featured: false,
+
     timeline: [
       {
         type: "system",

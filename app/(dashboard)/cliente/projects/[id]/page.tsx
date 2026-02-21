@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import connectDB from "@/lib/mongoose";
-import Project from "@/lib/models/Project";
+import connectDB from "@/lib/db/mongoose";
+import Project from "@/lib/modules/projects/model";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";

@@ -9,7 +9,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex">
         <AppSidebar />
 
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6 overflow-x-auto">{children}</main>
       </div>
     </div>
   );

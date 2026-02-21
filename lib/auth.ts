@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import connectDB from "@/lib/mongoose";
-import User from "@/lib/models/User";
+import connectDB from "@/lib/db/mongoose";
+import User from "@/lib/modules/users/model";
 import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
@@ -33,6 +33,7 @@ export const authOptions: NextAuthOptions = {
           id: user._id.toString(),
           email: user.email,
           role: user.role,
+          isActive: user.isActive,
         };
       },
     }),
@@ -43,13 +44,18 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
+        token.id = user.id;
+        token.role = user.role;
+        token.isActive = user.isActive;
       }
       return token;
     },
+
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).role = token.role;
+        session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.isActive = token.isActive;
       }
       return session;
     },

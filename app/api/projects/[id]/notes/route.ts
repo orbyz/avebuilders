@@ -1,19 +1,20 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/mongoose";
-import Project from "@/lib/models/Project";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import connectDB from "@/lib/db/mongoose";
+import Project from "@/lib/modules/projects/model";
+import { requirePermission } from "@/lib/auth/requirePermission";
 
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params;
+  const auth = await requirePermission("add_note");
 
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "profesional") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if ("error" in auth) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
+
+  const { session } = auth;
+  const { id } = await params;
 
   const { message } = await req.json();
   if (!message || !message.trim()) {
@@ -21,7 +22,7 @@ export async function POST(
   }
 
   await connectDB();
-  console.log("PROJECT SCHEMA PATHS:", Object.keys(Project.schema.paths));
+
   const result = await Project.updateOne(
     { _id: id },
     {
@@ -29,7 +30,10 @@ export async function POST(
         timeline: {
           type: "note",
           message,
-          createdBy: "profesional",
+          createdBy: {
+            userId: session.user.id,
+            role: session.user.role,
+          },
           createdAt: new Date(),
         },
       },

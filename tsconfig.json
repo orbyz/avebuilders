@@ -31,7 +31,7 @@
     "**/*.mts",
     "_old/(app)/cliente/layout.bak",
     "middleware.bak",
-    "scripts/seed-user.js",
+    "scripts/seedUsers.ts",
     "models/Project.bak",
     "models/Lead.bak",
   ],

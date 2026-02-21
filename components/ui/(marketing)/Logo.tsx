@@ -1,4 +1,3 @@
-// components/Logo.tsx
 export default function Logo({ className = "" }) {
   return (
     <svg

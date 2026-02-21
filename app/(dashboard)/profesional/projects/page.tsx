@@ -8,8 +8,8 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import connectDB from "@/lib/mongoose";
-import Project from "@/lib/models/Project";
+import connectDB from "@/lib/db/mongoose";
+import Project from "@/lib/modules/projects/model";
 
 export const dynamic = "force-dynamic";
 

@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
-import connectDB from "@/lib/mongoose";
-import Project from "@/lib/models/Project";
+import connectDB from "@/lib/db/mongoose";
+import Project from "@/lib/modules/projects/model";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import ProjectStatusClient from "@/components/projects/ProjectStatusClient";
 import AddProjectNote from "@/components/projects/AddProjectNote";
+import ProjectFinancialSection from "@/components/app/ProjectFinancialSection";
+import ProjectGalleryManager from "@/components/app/ProjectGalleryManager";
+import ProjectFeatureToggle from "@/components/app/ProjectFeatureToggle";
+import ProjectWorklogs from "./components/ProjectWorklogs";
 
 export default async function ProjectDetailPage({
   params,
@@ -13,6 +17,7 @@ export default async function ProjectDetailPage({
   const { id } = await params;
 
   await connectDB();
+
   const project = await Project.findById(id).lean();
 
   if (!project) notFound();
@@ -26,9 +31,12 @@ export default async function ProjectDetailPage({
 
   return (
     <div className="space-y-6">
+      {/* Detalles del proyecto */}
       <Card>
         <CardHeader>
-          <CardTitle>Detalle del proyecto</CardTitle>
+          <CardTitle className="text-2xl text-app-accent">
+            Detalle del proyecto
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div>
@@ -55,9 +63,13 @@ export default async function ProjectDetailPage({
             </p>
           </div>
         </CardContent>
-
+      </Card>
+      <Card>
+        {/* Historial */}
         <CardHeader>
-          <CardTitle>Historial del proyecto</CardTitle>
+          <CardTitle className="text-2xl text-app-accent">
+            Historial del proyecto
+          </CardTitle>
         </CardHeader>
         <AddProjectNote projectId={data._id} />
         <CardContent>
@@ -80,9 +92,57 @@ export default async function ProjectDetailPage({
           )}
         </CardContent>
       </Card>
+      {/* Worklogs */}
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-2xl text-app-accent">WorkLogs</CardTitle>
+          <CardContent>
+            <ProjectWorklogs projectId={id} />
+          </CardContent>
+        </CardHeader>
+      </Card>
+      {/* Galeria */}
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-2xl text-app-accent">
+            Galerias del Proyecto
+          </CardTitle>
+          <CardContent>
+            <ProjectGalleryManager
+              projectId={data._id}
+              initialGallery={data.gallery}
+            />
+          </CardContent>
+        </CardHeader>
+      </Card>
+      {/* Finanzas */}
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-2xl text-app-accent">
+            Finanzas del Proyecto
+          </CardTitle>
+          <CardContent>
+            <ProjectFinancialSection projectId={id} />
+          </CardContent>
+        </CardHeader>
+      </Card>
 
       {/* Estado (interactivo) */}
-      <ProjectStatusClient projectId={data._id} status={data.status} />
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl text-app-accent">
+            Estado del Proyecto
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ProjectStatusClient projectId={data._id} status={data.status} />
+          <ProjectFeatureToggle
+            projectId={data._id}
+            initialFeatured={data.featured}
+            status={data.status}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }

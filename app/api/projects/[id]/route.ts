@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/mongoose";
-import Project from "@/lib/models/Project";
+import connectDB from "@/lib/db/mongoose";
+import Project from "@/lib/modules/projects/model";
+import { requirePermission } from "@/lib/auth/requirePermission";
 
 export async function PATCH(
   req: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
+  const auth = await requirePermission("edit_project");
+
+  if ("error" in auth) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
   await connectDB();
 
   const { id } = await context.params;

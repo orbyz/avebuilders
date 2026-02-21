@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/mongoose";
-import Lead from "@/lib/models/Lead";
+import connectDB from "@/lib/db/mongoose";
+import Lead from "@/lib/modules/leads/model";
 
 export async function PATCH(
   req: NextRequest,

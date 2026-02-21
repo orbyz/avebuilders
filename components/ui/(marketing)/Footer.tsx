@@ -15,15 +15,15 @@ import Image from "next/image";
 
 const footerLinks = {
   servicios: [
-    { name: "Construcción Residencial", href: "#" },
-    { name: "Renovaciones", href: "#" },
-    { name: "Diseño Interior", href: "#" },
-    { name: "Gestión de Proyectos", href: "#" },
+    { name: "Construcción Residencial", href: "/services" },
+    { name: "Renovaciones", href: "/services" },
+    { name: "Diseño Interior", href: "/services" },
+    { name: "Gestión de Proyectos", href: "/services" },
   ],
   empresa: [
     { name: "Sobre Nosotros", href: "/about" },
     { name: "Proyectos", href: "/projects" },
-    { name: "Trabaja con nosotros", href: "#" },
+    { name: "Trabaja con nosotros", href: "/careers" },
   ],
   legal: [
     { name: "Política de Privacidad", href: "#" },

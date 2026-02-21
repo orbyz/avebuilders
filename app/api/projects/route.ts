@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/mongoose";
-import Lead from "@/lib/models/Lead";
-import Project from "@/lib/models/Project";
+import connectDB from "@/lib/db/mongoose";
+import Lead from "@/lib/modules/leads/model";
+import Project from "@/lib/modules/projects/model";
 
 export async function POST(req: Request) {
   try {

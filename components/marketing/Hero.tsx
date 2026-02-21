@@ -13,7 +13,7 @@ const slides = [
   {
     image: "/images/hero/slide-2.jpg",
     title: "Excelencia en Construcción",
-    subtitle: "Más de 20 años de experiencia en el sector",
+    subtitle: "Con 17 años de experiencia en el sector",
   },
   {
     image: "/images/hero/slide-3.jpg",
@@ -90,7 +90,7 @@ export default function Hero() {
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-brand-accent">
-                20+
+                17
               </div>
               <div className="text-sm text-gray-300">Años Exp.</div>
             </div>
