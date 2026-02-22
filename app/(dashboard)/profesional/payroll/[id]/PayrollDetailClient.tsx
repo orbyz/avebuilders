@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { jsPDF } from "jspdf";
 
 export default function PayrollDetailClient({ batch, payments }: any) {
   const [amount, setAmount] = useState("");
@@ -26,6 +27,125 @@ export default function PayrollDetailClient({ batch, payments }: any) {
     }
 
     window.location.reload();
+  };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    let y = 20;
+
+    // Header
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text("AVE BUILDERS", pageWidth / 2, y, { align: "center" });
+
+    y += 8;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text("Recibo de Nómina", pageWidth / 2, y, { align: "center" });
+
+    y += 15;
+
+    // Línea separadora
+    doc.line(20, y, pageWidth - 20, y);
+    y += 10;
+
+    // Info empleado
+    doc.setFont("helvetica", "bold");
+    doc.text("Datos del Empleado", 20, y);
+    y += 8;
+
+    doc.setFont("helvetica", "normal");
+    doc.text(`Nombre: ${batch.employee?.name}`, 20, y);
+    y += 6;
+    doc.text(`Email: ${batch.employee?.email}`, 20, y);
+    y += 10;
+
+    // Periodo
+    doc.setFont("helvetica", "bold");
+    doc.text("Periodo", 20, y);
+    y += 8;
+
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      `Semana: ${new Date(batch.weekStart).toLocaleDateString()} - ${new Date(
+        batch.weekEnd,
+      ).toLocaleDateString()}`,
+      20,
+      y,
+    );
+    y += 15;
+
+    // Tabla financiera
+    doc.setFont("helvetica", "bold");
+    doc.text("Resumen Financiero", 20, y);
+    y += 10;
+
+    doc.setFont("helvetica", "normal");
+
+    const financialRows = [
+      ["Total días trabajado", `${batch.totalWorked} días`],
+      ["Anticipos", `${batch.totalAdvance} €`],
+      ["Neto a pagar", `${batch.netToPay} €`],
+      ["Pagado", `${batch.paidAmount} €`],
+      ["Pendiente", `${batch.pendingAmount} €`],
+    ];
+
+    financialRows.forEach((row) => {
+      doc.text(row[0], 25, y);
+      doc.text(row[1], pageWidth - 25, y, { align: "right" });
+      y += 8;
+    });
+
+    y += 10;
+
+    // Estado visual
+    doc.setFont("helvetica", "bold");
+    doc.text("Estado:", 20, y);
+
+    const statusText =
+      batch.status === "generated"
+        ? "Pendiente"
+        : batch.status === "partial"
+          ? "Pago Parcial"
+          : "Pagado";
+
+    doc.setFont("helvetica", "normal");
+    doc.text(statusText, 50, y);
+
+    y += 20;
+
+    // Historial de pagos
+    doc.setFont("helvetica", "bold");
+    doc.text("Historial de Pagos", 20, y);
+    y += 10;
+
+    doc.setFont("helvetica", "normal");
+
+    payments.forEach((p: any) => {
+      doc.text(`${new Date(p.createdAt).toLocaleDateString()}`, 25, y);
+      doc.text(`${p.amount} €`, pageWidth - 25, y, { align: "right" });
+      y += 8;
+    });
+
+    y += 20;
+
+    // Footer
+    doc.line(20, y, pageWidth - 20, y);
+    y += 8;
+
+    doc.setFontSize(10);
+    doc.text(`Fecha de emisión: ${new Date().toLocaleDateString()}`, 20, y);
+
+    y += 6;
+    doc.text("Firma Empresa: __________________________", 20, y);
+
+    doc.save(
+      `nomina-${batch.employee?.name}-${new Date(
+        batch.weekStart,
+      ).toLocaleDateString()}.pdf`,
+    );
   };
 
   return (
@@ -90,6 +210,13 @@ export default function PayrollDetailClient({ batch, payments }: any) {
           </button>
         </div>
       )}
+      {/* Boton para descargar PDF */}
+      <button
+        onClick={generatePDF}
+        className="bg-brand-accent hover:bg-app-accent text-brand-bg px-2 py-1 rounded "
+      >
+        Descargar PDF
+      </button>
 
       {/* Historial */}
       <div>
