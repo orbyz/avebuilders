@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectDB from "@/lib/db/mongoose";
 import { generatePayrollBatch } from "@/lib/services/payroll.service";
+import User from "@/lib/modules/users/model";
 
 export async function POST(req: Request) {
   try {

@@ -8,6 +8,7 @@ import GeneratePayrollButton from "./../components/GeneratePayrollButton";
 import AddWorkLog from "../components/AddWorkLog";
 import { PayrollBatch } from "@/lib/modules/payroll/payrollBatch.model";
 import PayPayrollButton from "../components/PayPayrollButton";
+import User from "@/lib/modules/users/model";
 
 export default async function EmployeeDetail({
   params,

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import connectDB from "@/lib/db/mongoose";
 import { EmployeeProfile } from "@/lib/modules/payroll/employeeProfile.model";
 import EmployeesClient from "./components/EmployeesClient";
