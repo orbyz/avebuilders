@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import connectDB from "@/lib/db/mongoose";
+import User from "@/lib/modules/users/model";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -20,6 +22,14 @@ export async function middleware(request: NextRequest) {
   });
 
   if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // 🔒 VALIDAR EN DB
+  await connectDB();
+  const dbUser = await User.findById(token.id).select("isActive");
+
+  if (!dbUser || !dbUser.isActive) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

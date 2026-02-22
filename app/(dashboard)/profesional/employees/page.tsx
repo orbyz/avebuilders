@@ -4,9 +4,16 @@ import { EmployeeProfile } from "@/lib/modules/payroll/employeeProfile.model";
 import EmployeesClient from "./components/EmployeesClient";
 import User from "@/lib/modules/users/model";
 import "@/lib/register-models";
+import { requireAuth } from "@/lib/auth/requireAuth";
+import { redirect } from "next/navigation";
 
 export default async function EmployeesPage() {
   await connectDB();
+  const auth = await requireAuth();
+
+  if ("error" in auth) {
+    redirect("/login");
+  }
 
   const employees = await EmployeeProfile.find()
     .populate("userId", "name email role isActive")

@@ -1,19 +1,20 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { can, rolePermissions, Role } from "./permissions";
+import { requireAuth } from "./requireAuth";
 
 function isRole(value: string): value is Role {
   return value in rolePermissions;
 }
 
 export async function requirePermission(permission: string) {
-  const session = await getServerSession(authOptions);
+  const auth = await requireAuth();
 
-  if (!session) {
-    return { error: "Unauthorized", status: 401 };
+  if ("error" in auth) {
+    return auth;
   }
 
-  const role = session.user.role;
+  const role = auth.user.role;
 
   if (!role || !isRole(role)) {
     return { error: "Invalid role", status: 403 };
@@ -23,5 +24,5 @@ export async function requirePermission(permission: string) {
     return { error: "Forbidden", status: 403 };
   }
 
-  return { session };
+  return { session: auth.session };
 }
