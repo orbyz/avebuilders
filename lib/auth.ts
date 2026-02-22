@@ -20,12 +20,17 @@ export const authOptions: NextAuthOptions = {
         await connectDB();
         const user = await User.findOne({ email: credentials.email });
 
+        console.log("USER FOUND:", user?.email);
+        console.log("HASH:", user?.password);
+
         if (!user) return null;
 
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password,
         );
+
+        console.log("PASSWORD VALID:", isValid);
 
         if (!isValid) return null;
 
