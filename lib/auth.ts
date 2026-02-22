@@ -21,12 +21,11 @@ export const authOptions: NextAuthOptions = {
 
         const user = await User.findOne({ email: credentials.email });
 
-        if (!user) return null;
+        //        if (!user) return null;
 
         // 🔒 BLOQUEO POR INACTIVO
         if (!user.isActive) {
-          console.log("Intento login usuario inactivo:", user.email);
-          return null; // 👈 no revelamos información
+          return null;
         }
 
         const isValid = await bcrypt.compare(

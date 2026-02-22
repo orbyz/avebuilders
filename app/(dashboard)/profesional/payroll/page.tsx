@@ -4,9 +4,14 @@ import { PayrollBatch } from "@/lib/modules/payroll/payrollBatch.model";
 import User from "@/lib/modules/users/model";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { requireAuth } from "@/lib/auth/requireAuth";
+import { redirect } from "next/navigation";
 
 export default async function PayrollPage() {
-  await connectDB();
+  const auth = await requireAuth();
+  if ("error" in auth) {
+    redirect("/login");
+  }
 
   const batches = await PayrollBatch.find()
     .populate("employee", "name email")

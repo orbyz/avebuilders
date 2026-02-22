@@ -17,6 +17,12 @@ export default function UsersPage() {
 
   const loadUsers = async () => {
     const res = await fetch("/api/users");
+
+    if (res.status === 401 || res.status === 403) {
+      window.location.href = "/login";
+      return;
+    }
+
     const data = await res.json();
     setUsers(data);
   };

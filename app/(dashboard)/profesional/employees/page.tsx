@@ -8,7 +8,6 @@ import { requireAuth } from "@/lib/auth/requireAuth";
 import { redirect } from "next/navigation";
 
 export default async function EmployeesPage() {
-  await connectDB();
   const auth = await requireAuth();
 
   if ("error" in auth) {
