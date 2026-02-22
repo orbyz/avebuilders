@@ -6,8 +6,12 @@ export default async function UsersPage() {
   const auth = await requirePermission("manage_users");
 
   if ("error" in auth) {
-    if (auth.status === 401) redirect("/login");
-    if (auth.status === 403) redirect("/");
+    if (auth.status === 401) {
+      redirect("/login");
+    }
+    if (auth.status === 403) {
+      redirect("/");
+    }
   }
 
   return <UsersClient />;

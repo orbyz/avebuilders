@@ -12,13 +12,13 @@ export default async function LeadsPage() {
   const auth = await requirePermission("manage_projects");
 
   if ("error" in auth) {
-    if (auth.status === 401)
+    if (auth.status === 401) {
       redirect("/login");
-    if (auth.status === 403)
+    }
+    if (auth.status === 403) {
       redirect("/");
     }
-}
-
+  }
 
   const rawLeads = await Lead.find().sort({ createdAt: -1 }).lean();
 
