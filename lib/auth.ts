@@ -23,6 +23,12 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
+        // 🔒 BLOQUEO POR INACTIVO
+        if (!user.isActive) {
+          console.log("Intento login usuario inactivo:", user.email);
+          return null; // 👈 no revelamos información
+        }
+
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password,

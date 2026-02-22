@@ -23,6 +23,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // 🔒 Bloqueo si usuario fue desactivado después de login
+  if (token.isActive === false) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
   const role = token.role as string;
 
   // 🔒 Cliente no puede entrar a profesional
