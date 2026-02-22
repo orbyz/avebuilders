@@ -9,6 +9,7 @@ import AddWorkLog from "../components/AddWorkLog";
 import { PayrollBatch } from "@/lib/modules/payroll/payrollBatch.model";
 import PayPayrollButton from "../components/PayPayrollButton";
 import User from "@/lib/modules/users/model";
+import "@/lib/register-models";
 
 export default async function EmployeeDetail({
   params,

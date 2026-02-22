@@ -3,6 +3,7 @@ import connectDB from "@/lib/db/mongoose";
 import { Advance } from "@/lib/modules/finance/advance.model";
 import { EmployeeProfile } from "@/lib/modules/payroll/employeeProfile.model";
 import User from "@/lib/modules/users/model";
+import "@/lib/register-models";
 
 export async function GET(req: Request) {
   try {

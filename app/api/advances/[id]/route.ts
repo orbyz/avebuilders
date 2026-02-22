@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import { Advance } from "@/lib/modules/finance/advance.model";
+import "@/lib/register-models";
 
 export async function GET(
   req: NextRequest,

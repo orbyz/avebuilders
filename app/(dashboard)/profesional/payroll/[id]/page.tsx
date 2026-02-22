@@ -4,6 +4,7 @@ import { PayrollBatch } from "@/lib/modules/payroll/payrollBatch.model";
 import { Payment } from "@/lib/modules/payroll/payment.model";
 import User from "@/lib/modules/users/model";
 import PayrollDetailClient from "./PayrollDetailClient";
+import "@/lib/register-models";
 
 export default async function PayrollDetailPage({
   params,

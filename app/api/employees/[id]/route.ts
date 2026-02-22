@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import { requirePermission } from "@/lib/auth/requirePermission";
 import { EmployeeProfile } from "@/lib/modules/payroll/employeeProfile.model";
+import "@/lib/register-models";
 
 export async function PATCH(
   req: NextRequest,
