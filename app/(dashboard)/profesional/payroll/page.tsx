@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import connectDB from "@/lib/db/mongoose";
 import { PayrollBatch } from "@/lib/modules/payroll/payrollBatch.model";
 import User from "@/lib/modules/users/model";

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Table,
