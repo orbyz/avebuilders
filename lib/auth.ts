@@ -18,10 +18,8 @@ export const authOptions: NextAuthOptions = {
         }
 
         await connectDB();
-        const user = await User.findOne({ email: credentials.email });
 
-        console.log("USER FOUND:", user?.email);
-        console.log("HASH:", user?.password);
+        const user = await User.findOne({ email: credentials.email });
 
         if (!user) return null;
 
@@ -29,8 +27,6 @@ export const authOptions: NextAuthOptions = {
           credentials.password,
           user.password,
         );
-
-        console.log("PASSWORD VALID:", isValid);
 
         if (!isValid) return null;
 
