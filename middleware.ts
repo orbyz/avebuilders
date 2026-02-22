@@ -5,12 +5,8 @@ import type { NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (
-    pathname.startsWith("/login") ||
-    pathname === "/" ||
-    pathname.startsWith("/api")
-  ) {
-    return NextResponse.next();
+  if (pathname.startsWith("/profesional") && token.role === "cliente") {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   const token = await getToken({

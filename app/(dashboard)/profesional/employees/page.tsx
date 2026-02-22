@@ -11,13 +11,8 @@ export default async function EmployeesPage() {
   const auth = await requirePermission("manage_employees");
 
   if ("error" in auth) {
-    if (auth.status === 401) {
-      redirect("/login");
-    }
-
-    if (auth.status === 403) {
-      redirect("/");
-    }
+    if (auth.status === 401) redirect("/login");
+    if (auth.status === 403) redirect("/");
   }
 
   const employees = await EmployeeProfile.find()

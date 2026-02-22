@@ -21,7 +21,7 @@ export const authOptions: NextAuthOptions = {
 
         const user = await User.findOne({ email: credentials.email });
 
-        //        if (!user) return null;
+        if (!user) return null;
 
         // 🔒 BLOQUEO POR INACTIVO
         if (!user.isActive) {
@@ -32,7 +32,6 @@ export const authOptions: NextAuthOptions = {
           credentials.password,
           user.password,
         );
-
         if (!isValid) return null;
 
         return {

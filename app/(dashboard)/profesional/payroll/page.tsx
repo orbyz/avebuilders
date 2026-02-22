@@ -11,11 +11,9 @@ export default async function PayrollPage() {
   const auth = await requirePermission("manage_payroll");
 
   if ("error" in auth) {
-    if (auth.status === 401) {
+    if (auth.status === 401)
       redirect("/login");
-    }
-
-    if (auth.status === 403) {
+    if (auth.status === 403)
       redirect("/");
     }
   }
