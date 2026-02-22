@@ -1,28 +1,18 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { can, rolePermissions, Role } from "./permissions";
 import { requireAuth } from "./requireAuth";
-
-function isRole(value: string): value is Role {
-  return value in rolePermissions;
-}
+import { can } from "./permissions";
 
 export async function requirePermission(permission: string) {
   const auth = await requireAuth();
 
   if ("error" in auth) {
-    return auth;
+    return auth; // devuelve 401 o 403
   }
 
   const role = auth.user.role;
-
-  if (!role || !isRole(role)) {
-    return { error: "Invalid role", status: 403 };
-  }
 
   if (!can(role, permission)) {
     return { error: "Forbidden", status: 403 };
   }
 
-  return { session: auth.session };
+  return auth;
 }

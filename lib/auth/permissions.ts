@@ -1,9 +1,15 @@
 export type Role = "admin" | "empleado" | "cliente";
 
-export const rolePermissions: Record<Role, string[]> = {
-  admin: ["*", "manage_users", "edit_project"],
-  empleado: ["view_dashboard", "add_note"],
-  cliente: ["view_own_project", "write_history", "approve_budget"],
+export const rolePermissions = {
+  admin: [
+    "manage_users",
+    "manage_payroll",
+    "manage_employees",
+    "manage_projects",
+    "manage_finance",
+  ],
+  empleado: ["view_projects", "view_payroll"],
+  cliente: ["view_own_projects"],
 };
 
 export function can(role: Role, permission: string) {

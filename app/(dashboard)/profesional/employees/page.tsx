@@ -4,14 +4,20 @@ import { EmployeeProfile } from "@/lib/modules/payroll/employeeProfile.model";
 import EmployeesClient from "./components/EmployeesClient";
 import User from "@/lib/modules/users/model";
 import "@/lib/register-models";
-import { requireAuth } from "@/lib/auth/requireAuth";
+import { requirePermission } from "@/lib/auth/requirePermission";
 import { redirect } from "next/navigation";
 
 export default async function EmployeesPage() {
-  const auth = await requireAuth();
+  const auth = await requirePermission("manage_employees");
 
   if ("error" in auth) {
-    redirect("/login");
+    if (auth.status === 401) {
+      redirect("/login");
+    }
+
+    if (auth.status === 403) {
+      redirect("/");
+    }
   }
 
   const employees = await EmployeeProfile.find()

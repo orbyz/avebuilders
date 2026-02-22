@@ -10,6 +10,7 @@ import { PayrollBatch } from "@/lib/modules/payroll/payrollBatch.model";
 import PayPayrollButton from "../components/PayPayrollButton";
 import User from "@/lib/modules/users/model";
 import "@/lib/register-models";
+import { requirePermission } from "@/lib/auth/requirePermission";
 
 export default async function EmployeeDetail({
   params,
@@ -19,6 +20,7 @@ export default async function EmployeeDetail({
   const { id } = await params;
 
   await connectDB();
+  const auth = await requirePermission("manage_employees");
 
   const employee = await EmployeeProfile.findById(id);
   if (!employee) {

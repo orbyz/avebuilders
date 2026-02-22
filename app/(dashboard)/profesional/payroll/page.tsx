@@ -4,13 +4,20 @@ import { PayrollBatch } from "@/lib/modules/payroll/payrollBatch.model";
 import User from "@/lib/modules/users/model";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { requireAuth } from "@/lib/auth/requireAuth";
+import { requirePermission } from "@/lib/auth/requirePermission";
 import { redirect } from "next/navigation";
 
 export default async function PayrollPage() {
-  const auth = await requireAuth();
+  const auth = await requirePermission("manage_payroll");
+
   if ("error" in auth) {
-    redirect("/login");
+    if (auth.status === 401) {
+      redirect("/login");
+    }
+
+    if (auth.status === 403) {
+      redirect("/");
+    }
   }
 
   const batches = await PayrollBatch.find()
