@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
-import User from "@/lib/modules/users/model";
 
 export async function GET(
   req: NextRequest,
@@ -16,7 +15,19 @@ export async function GET(
     .sort({ date: -1 })
     .lean();
 
-  const safe = JSON.parse(JSON.stringify(worklogs));
+  // 🔒 Filtrar referencias rotas
+  const safeLogs = worklogs
+    .filter((log) => log.employee)
+    .map((log) => ({
+      ...log,
+      _id: log._id.toString(),
+      employee: {
+        ...log.employee,
+        _id: log.employee._id.toString(),
+      },
+      weekStart: log.weekStart ? new Date(log.weekStart).toISOString() : null,
+      date: log.date ? new Date(log.date).toISOString() : null,
+    }));
 
-  return NextResponse.json(safe);
+  return NextResponse.json(safeLogs);
 }

@@ -170,11 +170,13 @@ export default function ProjectWorklogs({ projectId }: { projectId: string }) {
             className="bg-neutral-800 p-2 rounded"
           >
             <option value="">Empleado</option>
-            {employees.map((e) => (
-              <option key={e._id} value={e.userId._id}>
-                {e.userId.name}
-              </option>
-            ))}
+            {employees
+              .filter((e) => e.userId)
+              .map((e) => (
+                <option key={e._id} value={e.userId._id}>
+                  {e.userId.name}
+                </option>
+              ))}
           </select>
 
           <input
@@ -213,11 +215,13 @@ export default function ProjectWorklogs({ projectId }: { projectId: string }) {
           className="bg-neutral-800 p-2 rounded"
         >
           <option value="">Seleccionar empleado</option>
-          {employees.map((e) => (
-            <option key={e._id} value={e.userId._id}>
-              {e.userId.name}
-            </option>
-          ))}
+          {employees
+            .filter((e) => e.userId)
+            .map((e) => (
+              <option key={e._id} value={e.userId._id}>
+                {e.userId.name}
+              </option>
+            ))}
         </select>
 
         <input
@@ -284,46 +288,48 @@ export default function ProjectWorklogs({ projectId }: { projectId: string }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {logs.map((w: any) => (
-                    <tr key={w._id} className="border-b border-neutral-800">
-                      <td className="py-2">{w.employee?.name}</td>
+                  {logs
+                    .filter((w: any) => w.employee)
+                    .map((w: any) => (
+                      <tr key={w._id} className="border-b border-neutral-800">
+                        <td className="py-2">{w.employee?.name}</td>
 
-                      <td className="py-2">
-                        {new Date(w.date).toLocaleDateString()}
-                      </td>
+                        <td className="py-2">
+                          {new Date(w.date).toLocaleDateString()}
+                        </td>
 
-                      <td className="py-2 text-right tabular-nums">
-                        {w.dailyRateSnapshot} €
-                      </td>
+                        <td className="py-2 text-right tabular-nums">
+                          {w.dailyRateSnapshot} €
+                        </td>
 
-                      <td className="py-2 text-right">
-                        {w.status === "open" && (
-                          <button
-                            onClick={async () => {
-                              const confirmDelete = confirm(
-                                "¿Eliminar este registro?",
-                              );
-                              if (!confirmDelete) return;
+                        <td className="py-2 text-right">
+                          {w.status === "open" && (
+                            <button
+                              onClick={async () => {
+                                const confirmDelete = confirm(
+                                  "¿Eliminar este registro?",
+                                );
+                                if (!confirmDelete) return;
 
-                              const res = await fetch(
-                                `/api/worklogs/${w._id}`,
-                                { method: "DELETE" },
-                              );
+                                const res = await fetch(
+                                  `/api/worklogs/${w._id}`,
+                                  { method: "DELETE" },
+                                );
 
-                              if (!res.ok) return;
+                                if (!res.ok) return;
 
-                              setWorklogs((prev) =>
-                                prev.filter((item) => item._id !== w._id),
-                              );
-                            }}
-                            className="text-red-400 hover:text-red-300"
-                          >
-                            Eliminar
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                                setWorklogs((prev) =>
+                                  prev.filter((item) => item._id !== w._id),
+                                );
+                              }}
+                              className="text-red-400 hover:text-red-300"
+                            >
+                              Eliminar
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
 
