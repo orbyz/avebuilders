@@ -1,6 +1,7 @@
 # Dependencias
 node_modules/
 .next/
+scripts/
 
 # Variables de entorno
 .env
