@@ -13,6 +13,8 @@ export async function requirePermission(permission: string) {
   if (!can(role, permission)) {
     return { error: "Forbidden", status: 403 };
   }
+  //  console.log("ROLE IN REQUIRE:", auth.user.role);
+  //  console.log("PERMISSION ASKED:", permission);
 
   return auth;
 }

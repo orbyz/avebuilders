@@ -45,13 +45,6 @@ const UserSchema = new Schema(
       required: true,
     },
 
-    // 🏢 TIPO DE CUENTA
-    accountType: {
-      type: String,
-      enum: ["profesional", "cliente"],
-      default: "cliente",
-    },
-
     isActive: {
       type: Boolean,
       default: true,

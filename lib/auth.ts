@@ -13,25 +13,28 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
-          return null;
-        }
-
         await connectDB();
 
-        const user = await User.findOne({ email: credentials.email });
+        const user = await User.findOne({ email: credentials?.email });
+
+        console.log("USER FROM DB:", user);
 
         if (!user) return null;
 
-        // 🔒 BLOQUEO POR INACTIVO
-        if (!user.isActive) {
+        console.log("IS ACTIVE FIELD:", user.isActive);
+
+        if (user.isActive === false) {
+          console.log("BLOCKED: USER INACTIVE");
           return null;
         }
 
         const isValid = await bcrypt.compare(
-          credentials.password,
+          credentials!.password,
           user.password,
         );
+
+        console.log("PASSWORD VALID:", isValid);
+
         if (!isValid) return null;
 
         return {
@@ -58,9 +61,9 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id;
-        session.user.role = token.role;
-        session.user.isActive = token.isActive;
+        session.user.id = token.sub as string;
+        session.user.role = token.role as string;
+        session.user.isActive = token.isActive as boolean;
       }
       return session;
     },

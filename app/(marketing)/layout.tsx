@@ -8,18 +8,16 @@ export const metadata = {
     "Empresa de reformas integrales, baños, cocinas, electricidad y mantenimiento. Presupuesto claro y gestión profesional.",
 };
 
-export default function RootLayout({
+export default function MarketingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
-      <body>
-        <Navigation />
-        {children}
-        <Footer />
-      </body>
-    </html>
+    <>
+      <Navigation />
+      {children}
+      <Footer />
+    </>
   );
 }

@@ -19,14 +19,22 @@ export default async function EmployeesPage() {
     .populate("userId", "name email role isActive")
     .lean();
 
-  const safeEmployees = employees.map((e) => ({
-    ...e,
-    _id: e._id.toString(),
-    userId: {
-      ...e.userId,
-      _id: e.userId._id.toString(),
-    },
-  }));
+  const safeEmployees = employees
+    .filter((e) => e.userId)
+    .map((e: any) => ({
+      _id: e._id.toString(),
+      dailyRate: e.dailyRate,
+      isActive: e.isActive,
+      createdAt: e.createdAt?.toISOString() ?? null,
+      updatedAt: e.updatedAt?.toISOString() ?? null,
+      userId: {
+        _id: e.userId._id.toString(),
+        name: e.userId.name,
+        email: e.userId.email,
+        role: e.userId.role,
+        isActive: e.userId.isActive,
+      },
+    }));
 
   return <EmployeesClient employees={safeEmployees} />;
 }
