@@ -1,15 +1,10 @@
-// app/(dashboard)/profesional/page.tsx
-
+import { NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import Project from "@/lib/modules/projects/model";
 import Invoice from "@/lib/modules/finance/invoice.model";
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
-import ProjectsSummaryTable from "@/components/app/dashboard/ProjectsSummaryTable";
-import DashboardKPIsCompact from "@/components/app/dashboard/DashboardKPIsCompact";
 
-export const dynamic = "force-dynamic";
-
-export default async function ProfesionalDashboard() {
+export async function GET() {
   await connectDB();
 
   const projects = await Project.find().lean();
@@ -41,12 +36,17 @@ export default async function ProfesionalDashboard() {
     );
 
     const realProfit = totalIncome - (totalExpenses + labourCost);
+
     const marginPercentage =
       totalIncome > 0 ? (realProfit / totalIncome) * 100 : 0;
 
     const overdueInvoices = projectInvoices.filter(
       (i: any) =>
         i.status === "pending" && i.dueDate && new Date(i.dueDate) < now,
+    ).length;
+
+    const pendingExpenses = projectInvoices.filter(
+      (i: any) => i.type === "expense" && i.status === "pending",
     ).length;
 
     return {
@@ -59,16 +59,9 @@ export default async function ProfesionalDashboard() {
       realProfit,
       marginPercentage,
       overdueInvoices,
+      pendingExpenses,
     };
   });
 
-  return (
-    <div className="space-y-10">
-      <h1 className="text-3xl font-bold">Centro de Control</h1>
-
-      <DashboardKPIsCompact data={summary} />
-
-      <ProjectsSummaryTable data={summary} />
-    </div>
-  );
+  return NextResponse.json(summary);
 }
