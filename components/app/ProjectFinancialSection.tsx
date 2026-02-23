@@ -21,11 +21,15 @@ export default function ProjectFinancialSection({
   const [amount, setAmount] = useState(0);
   const [type, setType] = useState<"income" | "expense">("income");
   const [dueDate, setDueDate] = useState("");
+  const [labourCost, setLabourCost] = useState(0);
 
   useEffect(() => {
     fetch(`/api/invoices/${projectId}`)
       .then((res) => res.json())
       .then((data) => setInvoices(data));
+    fetch(`/api/projects/${projectId}/labour-cost`)
+      .then((res) => res.json())
+      .then((data) => setLabourCost(data.totalLabour || 0));
   }, [projectId]);
 
   async function createInvoice() {
@@ -72,7 +76,8 @@ export default function ProjectFinancialSection({
     .filter((i) => i.type === "expense" && i.status === "pending")
     .reduce((sum, i) => sum + i.amount, 0);
 
-  const realProfit = paidIncome - paidExpenses;
+  const realProfit = paidIncome - (paidExpenses + labourCost);
+  const marginPercentage = paidIncome > 0 ? (realProfit / paidIncome) * 100 : 0;
 
   const now = new Date();
 
@@ -135,6 +140,17 @@ export default function ProjectFinancialSection({
               color="text-yellow-500"
             />
           </div>
+          <FinancialCard
+            label="Costo de mano de obra"
+            value={labourCost}
+            color="text-purple-500"
+          />
+          <FinancialCard
+            label="Margen %"
+            value={Number(marginPercentage.toFixed(1))}
+            color={marginPercentage >= 0 ? "text-green-500" : "text-red-500"}
+            isCurrency={false}
+          />
 
           {/* KPIs de riesgo */}
           <div className="space-y-6 my-8">

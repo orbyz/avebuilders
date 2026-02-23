@@ -7,7 +7,7 @@ export async function PATCH(
   req: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
-  const auth = await requirePermission("edit_project");
+  const auth = await requirePermission("manage_projects");
 
   if ("error" in auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });

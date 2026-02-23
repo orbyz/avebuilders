@@ -65,6 +65,17 @@ export default async function ProjectDetailPage({
           </div>
         </CardContent>
       </Card>
+      {/* Finanzas */}
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle className="text-2xl text-app-accent">
+            Finanzas del Proyecto
+          </CardTitle>
+          <CardContent>
+            <ProjectFinancialSection projectId={id} />
+          </CardContent>
+        </CardHeader>
+      </Card>
       <Card>
         {/* Historial */}
         <CardHeader>
@@ -113,17 +124,6 @@ export default async function ProjectDetailPage({
               projectId={data._id}
               initialGallery={data.gallery}
             />
-          </CardContent>
-        </CardHeader>
-      </Card>
-      {/* Finanzas */}
-      <Card className="mt-4">
-        <CardHeader>
-          <CardTitle className="text-2xl text-app-accent">
-            Finanzas del Proyecto
-          </CardTitle>
-          <CardContent>
-            <ProjectFinancialSection projectId={id} />
           </CardContent>
         </CardHeader>
       </Card>
