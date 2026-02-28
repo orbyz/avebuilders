@@ -24,7 +24,7 @@ export default function ProjectFinancialSection({
   const [labourCost, setLabourCost] = useState(0);
 
   useEffect(() => {
-    fetch(`/api/invoices/${projectId}`)
+    fetch(`/api/projects/${projectId}/invoices`)
       .then((res) => res.json())
       .then((data) => setInvoices(data));
     fetch(`/api/projects/${projectId}/labour-cost`)
@@ -93,10 +93,10 @@ export default function ProjectFinancialSection({
   async function toggleStatus(id: string, current: string) {
     const newStatus = current === "paid" ? "pending" : "paid";
 
-    await fetch("/api/invoices/update", {
+    await fetch(`/api/invoices/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, status: newStatus }),
+      body: JSON.stringify({ status: newStatus }),
     });
 
     setInvoices((prev) =>
@@ -106,7 +106,6 @@ export default function ProjectFinancialSection({
 
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-bold">Finanzas del Proyecto</h2>
       {overdueInvoices.length > 0 && (
         <div className="bg-red-900/40 border border-red-700 p-4 rounded-xl mb-6">
           ⚠️ Hay {overdueInvoices.length} facturas vencidas por un total de €{" "}
@@ -153,25 +152,27 @@ export default function ProjectFinancialSection({
           />
 
           {/* KPIs de riesgo */}
-          <div className="space-y-6 my-8">
-            <h3 className="text-sm text-gray-400 mb-3">Riesgo</h3>
-            <div className="grid md:grid-cols-4 gap-4">
+          <div className="space-y-4 mt-8">
+            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+              Riesgo Financiero
+            </h3>
+
+            <div className="grid md:grid-cols-3 gap-3">
               <FinancialCard
                 label="Pendiente de Pago"
                 value={pendingExpenses}
                 color="text-yellow-500"
               />
               <FinancialCard
-                label="Facturas vencidas"
+                label="Facturas Vencidas"
                 value={overdueInvoices.length}
                 color={
                   overdueInvoices.length > 0 ? "text-red-500" : "text-green-500"
                 }
                 isCurrency={false}
               />
-
               <FinancialCard
-                label="Importe vencido"
+                label="Importe Vencido"
                 value={overdueAmount}
                 color={overdueAmount > 0 ? "text-red-500" : "text-green-500"}
               />
@@ -181,8 +182,11 @@ export default function ProjectFinancialSection({
       </div>
 
       {/* Crear factura */}
-      <div className="bg-neutral-900 p-6 rounded-xl space-y-4">
-        <div className="grid md:grid-cols-4 gap-4">
+      <div className="bg-neutral-900 border border-neutral-800 p-4 rounded-xl space-y-4">
+        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+          Nueva Factura
+        </h3>
+        <div className="grid md:grid-cols-4 gap-3">
           <input
             type="date"
             value={dueDate}
@@ -222,37 +226,43 @@ export default function ProjectFinancialSection({
       </div>
 
       {/* Lista */}
-      <div className="space-y-3">
+      <div className="bg-neutral-900 rounded-xl border border-neutral-800 overflow-hidden">
+        <div className="grid grid-cols-6 text-xs uppercase text-gray-500 px-4 py-3 border-b border-neutral-800">
+          <span>Concepto</span>
+          <span>Tipo</span>
+          <span>Vencimiento</span>
+          <span>Importe</span>
+          <span>Estado</span>
+          <span className="text-right">Acción</span>
+        </div>
+
         {invoices.map((inv) => (
           <div
-            key={String(inv._id)}
-            className="bg-neutral-900 p-4 rounded-xl flex justify-between items-center"
+            key={inv._id}
+            className="grid grid-cols-6 px-4 py-3 text-sm items-center border-b border-neutral-800 hover:bg-neutral-800/40 transition"
           >
-            <div>
-              <p className="font-semibold">{inv.concept}</p>
-              <p className="text-sm text-gray-400">
-                {inv.type === "income" ? "Ingreso" : "Gasto"}
-              </p>
+            <span className="font-medium">{inv.concept}</span>
+            <span>{inv.type === "income" ? "Ingreso" : "Gasto"}</span>
+            <span>
+              {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : "-"}
+            </span>
+            <span className="font-semibold">
+              € {(inv.amount ?? 0).toLocaleString()}
+            </span>
+            <span
+              className={
+                inv.status === "paid" ? "text-green-500" : "text-yellow-500"
+              }
+            >
+              {inv.status === "paid" ? "Pagado" : "Pendiente"}
+            </span>
 
-              {/* 👇 AQUÍ VA */}
-              <p className="text-xs text-gray-500">
-                Vence:{" "}
-                {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : "-"}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-6">
-              <p className="font-bold">
-                € {(inv.amount ?? 0).toLocaleString()}
-              </p>
-
+            <div className="text-right">
               <button
                 onClick={() => toggleStatus(inv._id, inv.status)}
-                className={`px-3 py-1 rounded-lg text-sm font-semibold transition ${
-                  inv.status === "paid" ? "bg-green-600" : "bg-yellow-600"
-                }`}
+                className="text-xs px-3 py-1 rounded-md bg-neutral-700 hover:bg-neutral-600 transition"
               >
-                {inv.status === "paid" ? "Pagado" : "Pendiente"}
+                Cambiar
               </button>
             </div>
           </div>
@@ -273,9 +283,9 @@ function FinancialCard({
   isCurrency?: boolean;
 }) {
   return (
-    <div className="bg-neutral-900 p-6 rounded-xl">
-      <p className="text-sm text-gray-400">{label}</p>
-      <p className={`text-2xl font-bold mt-2 ${color}`}>
+    <div className="bg-neutral-900 px-4 py-3 rounded-lg border border-neutral-800">
+      <p className="text-xs text-gray-500 uppercase tracking-wide">{label}</p>
+      <p className={`text-lg font-semibold mt-1 ${color}`}>
         {isCurrency ? "€ " : ""}
         {value.toLocaleString()}
       </p>

@@ -12,7 +12,7 @@ const ProjectSchema = new Schema(
     leadId: {
       type: Schema.Types.ObjectId,
       ref: "Lead",
-      required: true,
+      default: null,
     },
 
     clientId: {
@@ -20,6 +20,13 @@ const ProjectSchema = new Schema(
       ref: "User",
       default: null,
     },
+
+    assignedEmployees: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
 
     email: {
       type: String,
@@ -67,5 +74,6 @@ const ProjectSchema = new Schema(
   },
   { timestamps: true },
 );
+ProjectSchema.index({ assignedEmployees: 1 });
 
 export default models.Project || model("Project", ProjectSchema);

@@ -1,15 +1,7 @@
-import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
 import connectDB from "@/lib/db/mongoose";
 import Project from "@/lib/modules/projects/model";
+import Invoice from "@/lib/modules/finance/invoice.model";
+import ProjectsClient from "./ProjectsClient";
 
 export const dynamic = "force-dynamic";
 
@@ -18,62 +10,40 @@ export default async function ProjectsPage() {
 
   const rawProjects = await Project.find().sort({ createdAt: -1 }).lean();
 
-  const projects = rawProjects.map((project) => ({
-    ...project,
-    _id: project._id.toString(),
-    createdAt: project.createdAt?.toISOString(),
-  }));
+  const projectIds = rawProjects.map((p) => p._id);
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Proyectos</CardTitle>
-      </CardHeader>
+  const rawInvoices = await Invoice.find({
+    projectId: { $in: projectIds },
+  }).lean();
 
-      <CardContent>
-        {projects.length === 0 ? (
-          <p className="text-app-muted">No hay proyectos todavía.</p>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Teléfono</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Fecha</TableHead>
-              </TableRow>
-            </TableHeader>
+  const now = new Date();
 
-            <TableBody>
-              {projects.map((project: any) => (
-                <TableRow key={project._id}>
-                  <TableCell>
-                    <Link
-                      href={`/profesional/projects/${project._id}`}
-                      className="text-app-accent hover:underline"
-                    >
-                      {project.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{project.email}</TableCell>
-                  <TableCell>{project.phone || "—"}</TableCell>
-                  <TableCell>
-                    <span className="text-xs rounded bg-app-surface2 px-2 py-1">
-                      {project.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {project.createdAt
-                      ? new Date(project.createdAt).toLocaleDateString()
-                      : "—"}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </CardContent>
-    </Card>
-  );
+  const projects = rawProjects.map((project) => {
+    const invoices = rawInvoices.filter(
+      (inv) => inv.projectId.toString() === project._id.toString(),
+    );
+
+    const totalIncome = invoices
+      .filter((i) => i.type === "income")
+      .reduce((sum, i) => sum + Number(i.amount || 0), 0);
+
+    const totalExpense = invoices
+      .filter((i) => i.type === "expense")
+      .reduce((sum, i) => sum + Number(i.amount || 0), 0);
+
+    const hasOverdue = invoices.some(
+      (i) => i.status === "pending" && i.dueDate && new Date(i.dueDate) < now,
+    );
+
+    return {
+      ...project,
+      totalIncome,
+      totalExpense,
+      hasOverdue,
+    };
+  });
+
+  const serialized = JSON.parse(JSON.stringify(projects));
+
+  return <ProjectsClient projects={serialized} />;
 }

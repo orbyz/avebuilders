@@ -4,15 +4,15 @@ import Invoice from "@/lib/modules/finance/invoice.model";
 
 export async function GET(
   req: NextRequest,
-  context: { params: Promise<{ projectId: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
     await connectDB();
 
-    const { projectId } = await context.params;
+    const { id } = await context.params;
 
     const invoices = await Invoice.find({
-      projectId,
+      projectId: id,
     })
       .sort({ createdAt: -1 })
       .lean();
