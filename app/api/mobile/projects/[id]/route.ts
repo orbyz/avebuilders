@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import Project from "@/lib/modules/projects/model";
 import Invoice from "@/lib/modules/finance/invoice.model";
 import jwt from "jsonwebtoken";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } },
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
     await connectDB();
+
+    const { id } = await context.params;
 
     const authHeader = req.headers.get("authorization");
 
@@ -28,13 +31,13 @@ export async function GET(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const project = await Project.findById(params.id);
+    const project = await Project.findById(id);
 
     if (!project) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    const invoices = await Invoice.find({ projectId: params.id });
+    const invoices = await Invoice.find({ projectId: id });
 
     const totalIncome = invoices
       .filter((i) => i.type === "income")
@@ -53,6 +56,7 @@ export async function GET(
       },
     });
   } catch (error) {
+    console.error("MOBILE PROJECT DETAIL ERROR:", error);
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 }
