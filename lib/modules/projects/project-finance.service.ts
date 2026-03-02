@@ -25,7 +25,7 @@ export async function calculateProjectFinance(projectId: string) {
   const realProfit = totalIncome - (totalExpenses + labourCost);
 
   const marginPercentage =
-    totalIncome > 0 ? (realProfit / totalIncome) * 100 : 0;
+    totalIncome > 0 ? (realProfit / totalIncome) * 100 : null;
 
   const overdueInvoices = invoices.filter(
     (i) => i.status === "pending" && i.dueDate && new Date(i.dueDate) < now,

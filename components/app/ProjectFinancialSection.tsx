@@ -77,7 +77,8 @@ export default function ProjectFinancialSection({
     .reduce((sum, i) => sum + i.amount, 0);
 
   const realProfit = paidIncome - (paidExpenses + labourCost);
-  const marginPercentage = paidIncome > 0 ? (realProfit / paidIncome) * 100 : 0;
+  const marginPercentage =
+    paidIncome > 0 ? (realProfit / paidIncome) * 100 : null;
 
   const now = new Date();
 
@@ -146,8 +147,18 @@ export default function ProjectFinancialSection({
           />
           <FinancialCard
             label="Margen %"
-            value={Number(marginPercentage.toFixed(1))}
-            color={marginPercentage >= 0 ? "text-green-500" : "text-red-500"}
+            value={
+              marginPercentage !== null
+                ? `${marginPercentage.toFixed(1)}%`
+                : "—"
+            }
+            color={
+              marginPercentage === null
+                ? "text-gray-500"
+                : marginPercentage >= 0
+                  ? "text-green-500"
+                  : "text-red-500"
+            }
             isCurrency={false}
           />
 
@@ -278,7 +289,7 @@ function FinancialCard({
   isCurrency = true,
 }: {
   label: string;
-  value: number;
+  value: number | string;
   color: string;
   isCurrency?: boolean;
 }) {
@@ -286,8 +297,8 @@ function FinancialCard({
     <div className="bg-neutral-900 px-4 py-3 rounded-lg border border-neutral-800">
       <p className="text-xs text-gray-500 uppercase tracking-wide">{label}</p>
       <p className={`text-lg font-semibold mt-1 ${color}`}>
-        {isCurrency ? "€ " : ""}
-        {value.toLocaleString()}
+        {isCurrency && typeof value === "number" ? "€ " : ""}
+        {typeof value === "number" ? value.toLocaleString() : value}
       </p>
     </div>
   );
