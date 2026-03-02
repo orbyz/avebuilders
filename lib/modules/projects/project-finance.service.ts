@@ -7,7 +7,10 @@ export async function calculateProjectFinance(projectId: string) {
   const now = new Date();
 
   const invoices = await Invoice.find({ projectId: objectId }).lean();
-  const worklogs = await WorkLog.find({ project: objectId }).lean();
+  const worklogs = await WorkLog.find({
+    project: objectId,
+    status: "closed",
+  }).lean();
 
   const totalIncome = invoices
     .filter((i) => i.type === "income")
