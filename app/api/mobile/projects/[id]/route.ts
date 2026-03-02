@@ -4,6 +4,7 @@ import connectDB from "@/lib/db/mongoose";
 import Project from "@/lib/modules/projects/model";
 import jwt from "jsonwebtoken";
 import { calculateProjectFinance } from "@/lib/modules/projects/project-finance.service";
+import Invoice from "@/lib/modules/finance/invoice.model";
 
 export async function GET(
   req: NextRequest,
@@ -39,10 +40,12 @@ export async function GET(
 
     // 🟢 Nueva lógica centralizada
     const finance = await calculateProjectFinance(id);
+    const invoices = await Invoice.find({ projectId: id }).lean();
 
     return NextResponse.json({
       project,
       finance,
+      invoices,
     });
   } catch (error) {
     console.error("MOBILE PROJECT DETAIL ERROR:", error);
