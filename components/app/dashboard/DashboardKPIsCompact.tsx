@@ -4,7 +4,7 @@ interface ProjectSummary {
   labourCost: number;
   realProfit: number;
   overdueInvoices: number;
-  marginPercentage: number;
+  marginPercentage: number | null;
 }
 
 export default function DashboardKPIsCompact({
@@ -18,9 +18,15 @@ export default function DashboardKPIsCompact({
     0,
   );
   const totalProfit = data.reduce((s, p) => s + p.realProfit, 0);
-  const totalRisk = data.filter(
-    (p) => p.realProfit < 0 || p.marginPercentage < 5,
-  ).length;
+
+  const isRisk = (p: ProjectSummary) => {
+    if (p.realProfit < 0) return true;
+    if (p.marginPercentage === null) return true;
+    if (p.marginPercentage < 5) return true;
+    return false;
+  };
+
+  const totalRisk = data.filter(isRisk).length;
 
   return (
     <div className="grid md:grid-cols-4 gap-4 text-sm">

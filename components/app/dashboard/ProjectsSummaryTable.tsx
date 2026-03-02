@@ -9,19 +9,24 @@ interface Project {
   totalExpenses: number;
   labourCost: number;
   realProfit: number;
-  marginPercentage: number;
+  marginPercentage: number | null;
   overdueInvoices: number;
 }
 
 export default function ProjectsSummaryTable({ data }: { data: Project[] }) {
   const sorted = [...data].sort((a, b) => {
-    const riskA = a.realProfit < 0 || a.marginPercentage < 5 ? 1 : 0;
-    const riskB = b.realProfit < 0 || b.marginPercentage < 5 ? 1 : 0;
+    const isRisk = (p: Project) =>
+      p.realProfit < 0 || p.marginPercentage === null || p.marginPercentage < 5;
+
+    const riskA = isRisk(a) ? 1 : 0;
+    const riskB = isRisk(b) ? 1 : 0;
 
     if (riskA !== riskB) return riskB - riskA;
-    return a.marginPercentage - b.marginPercentage;
-  });
 
+    return (
+      (a.marginPercentage ?? -Infinity) - (b.marginPercentage ?? -Infinity)
+    );
+  });
   return (
     <div className="bg-neutral-900 rounded-xl border border-neutral-800 overflow-hidden">
       <table className="w-full text-sm">
@@ -51,10 +56,7 @@ export default function ProjectsSummaryTable({ data }: { data: Project[] }) {
                 € {(p.totalExpenses + p.labourCost).toLocaleString()}
               </td>
               <td className="p-3 text-center">
-                <MarginIndicator
-                  marginPercentage={p.marginPercentage}
-                  realProfit={p.realProfit}
-                />
+                <MarginIndicator marginPercentage={p.marginPercentage} />
               </td>
               <td className="p-3 text-center">
                 {p.overdueInvoices > 0 && "⚠"}
