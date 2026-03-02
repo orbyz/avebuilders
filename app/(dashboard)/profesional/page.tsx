@@ -6,6 +6,7 @@ import Invoice from "@/lib/modules/finance/invoice.model";
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
 import ProjectsSummaryTable from "@/components/app/dashboard/ProjectsSummaryTable";
 import DashboardKPIsCompact from "@/components/app/dashboard/DashboardKPIsCompact";
+import { calculateProjectFinance } from "@/lib/modules/projects/project-finance.service";
 
 export const dynamic = "force-dynamic";
 
@@ -13,61 +14,25 @@ export default async function ProfesionalDashboard() {
   await connectDB();
 
   const projects = await Project.find().lean();
-  const invoices = await Invoice.find().lean();
-  const worklogs = await WorkLog.find().lean();
 
-  const now = new Date();
+  const summary = await Promise.all(
+    projects.map(async (project: any) => {
+      const finance = await calculateProjectFinance(project._id.toString());
 
-  const summary = projects.map((project: any) => {
-    const projectInvoices = invoices.filter(
-      (inv: any) => inv.projectId?.toString() === project._id.toString(),
-    );
-
-    const projectWorklogs = worklogs.filter(
-      (wl: any) => wl.project?.toString() === project._id.toString(),
-    );
-
-    const totalIncome = projectInvoices
-      .filter((i: any) => i.type === "income")
-      .reduce((sum: number, i: any) => sum + (i.amount ?? 0), 0);
-
-    const totalExpenses = projectInvoices
-      .filter((i: any) => i.type === "expense")
-      .reduce((sum: number, i: any) => sum + (i.amount ?? 0), 0);
-
-    const labourCost = projectWorklogs.reduce(
-      (sum: number, w: any) => sum + (w.dailyRateSnapshot ?? 0),
-      0,
-    );
-
-    const realProfit = totalIncome - (totalExpenses + labourCost);
-    const marginPercentage =
-      totalIncome > 0 ? (realProfit / totalIncome) * 100 : 0;
-
-    const overdueInvoices = projectInvoices.filter(
-      (i: any) =>
-        i.status === "pending" && i.dueDate && new Date(i.dueDate) < now,
-    ).length;
-
-    return {
-      _id: project._id.toString(),
-      name: project.name,
-      status: project.status,
-      totalIncome,
-      totalExpenses,
-      labourCost,
-      realProfit,
-      marginPercentage,
-      overdueInvoices,
-    };
-  });
+      return {
+        _id: project._id.toString(),
+        name: project.name,
+        status: project.status,
+        ...finance,
+      };
+    }),
+  );
 
   return (
     <div className="space-y-10">
       <h1 className="text-3xl font-bold">Centro de Control</h1>
 
       <DashboardKPIsCompact data={summary} />
-
       <ProjectsSummaryTable data={summary} />
     </div>
   );

@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import Project from "@/lib/modules/projects/model";
-import Invoice from "@/lib/modules/finance/invoice.model";
 import jwt from "jsonwebtoken";
+import { calculateProjectFinance } from "@/lib/modules/projects/project-finance.service";
 
 export async function GET(
   req: NextRequest,
@@ -37,23 +37,12 @@ export async function GET(
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    const invoices = await Invoice.find({ projectId: id });
-
-    const totalIncome = invoices
-      .filter((i) => i.type === "income")
-      .reduce((sum, i) => sum + i.amount, 0);
-
-    const totalExpense = invoices
-      .filter((i) => i.type === "expense")
-      .reduce((sum, i) => sum + i.amount, 0);
+    // 🟢 Nueva lógica centralizada
+    const finance = await calculateProjectFinance(id);
 
     return NextResponse.json({
       project,
-      summary: {
-        totalIncome,
-        totalExpense,
-        balance: totalIncome - totalExpense,
-      },
+      finance,
     });
   } catch (error) {
     console.error("MOBILE PROJECT DETAIL ERROR:", error);
