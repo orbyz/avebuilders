@@ -42,6 +42,8 @@ export async function generatePayrollBatch(
     const totalWorked = logs.reduce((acc, l) => acc + l.dailyRateSnapshot, 0);
     const totalAdvance = advances.reduce((acc, a) => acc + a.amount, 0);
 
+    const netToPay = totalWorked - totalAdvance;
+
     const batch = await PayrollBatch.create(
       [
         {
@@ -50,7 +52,10 @@ export async function generatePayrollBatch(
           weekEnd: end,
           totalWorked,
           totalAdvance,
-          netToPay: totalWorked - totalAdvance,
+          netToPay,
+          paidAmount: 0,
+          pendingAmount: netToPay,
+          status: "generated",
         },
       ],
       { session },
