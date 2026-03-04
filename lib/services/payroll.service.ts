@@ -39,7 +39,7 @@ export async function generatePayrollBatch(
       payrollBatch: null,
     }).session(session);
 
-    const totalWorked = logs.reduce((acc, l) => acc + l.dailyRate, 0);
+    const totalWorked = logs.reduce((acc, l) => acc + l.dailyRateSnapshot, 0);
     const totalAdvance = advances.reduce((acc, a) => acc + a.amount, 0);
 
     const batch = await PayrollBatch.create(
@@ -99,7 +99,7 @@ export async function markPayrollAsPaid(batchId: string) {
     logs.forEach((log) => {
       const projectId = log.project.toString();
       if (!grouped[projectId]) grouped[projectId] = 0;
-      grouped[projectId] += log.dailyRate;
+      grouped[projectId] += log.dailyRateSnapshot;
     });
 
     for (const projectId in grouped) {
