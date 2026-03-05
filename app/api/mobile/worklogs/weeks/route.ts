@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import jwt from "jsonwebtoken";
-import "@/lib/db/register.models";
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
 import User from "@/lib/modules/users/model";
 import Project from "@/lib/modules/projects/model";
