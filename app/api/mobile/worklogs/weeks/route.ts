@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import jwt from "jsonwebtoken";
+
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
+import User from "@/lib/modules/users/model";
 
 export async function GET(req: NextRequest) {
   try {
