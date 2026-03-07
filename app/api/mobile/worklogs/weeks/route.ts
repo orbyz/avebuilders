@@ -9,6 +9,8 @@ import Project from "@/lib/modules/projects/model";
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
+    User;
+    Project;
 
     // 🔐 Validar JWT móvil
     const authHeader = req.headers.get("authorization");
