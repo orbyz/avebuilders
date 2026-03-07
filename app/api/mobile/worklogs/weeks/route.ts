@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
     const logs = await WorkLog.find()
       .populate("employee", "name")
       .populate("project", "name")
+      .sort({ weekStart: -1 })
       .lean();
 
     const weeksMap = new Map();
