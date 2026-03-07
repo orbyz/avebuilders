@@ -9,12 +9,10 @@ import Project from "@/lib/modules/projects/model";
 
 export async function GET(
   req: NextRequest,
-  context: { params: { weekStart: string } },
+  context: { params: Promise<{ weekStart: string }> },
 ) {
   try {
     await connectDB();
-
-    // 🔧 registrar modelos para mongoose
     User;
     Project;
 
@@ -28,7 +26,7 @@ export async function GET(
 
     jwt.verify(token, process.env.MOBILE_JWT_SECRET as string);
 
-    const { weekStart } = context.params;
+    const { weekStart } = await context.params;
 
     const start = new Date(weekStart);
     const end = new Date(start);
