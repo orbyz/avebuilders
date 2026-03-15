@@ -34,11 +34,11 @@ export async function GET(
     const end = new Date(start);
     end.setDate(start.getDate() + 7);
 
+    const employeeId = req.nextUrl.searchParams.get("employeeId");
+
     const logs = await WorkLog.find({
-      weekStart: {
-        $gte: start,
-        $lt: end,
-      },
+      weekStart: start,
+      employee: employeeId,
     })
       .populate("employee", "name")
       .populate("project", "name")
