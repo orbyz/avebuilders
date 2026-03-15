@@ -1,0 +1,11 @@
+import "@/lib/modules/users/model";
+import "@/lib/modules/projects/model";
+import "@/lib/modules/payroll/worklog.model";
+import "@/lib/modules/payroll/payrollBatch.model";
+import "@/lib/modules/finance/advance.model";
+import "@/lib/modules/finance/invoice.model";
+import "@/lib/modules/leads/model";
+import "@/lib/modules/material-request/material-request.model";
+import "@/lib/modules/payroll/employeeProfile.model";
+import "@/lib/modules/payroll/payroll.model";
+import "@/lib/modules/projects/model";
