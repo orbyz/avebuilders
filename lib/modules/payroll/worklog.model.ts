@@ -44,7 +44,10 @@ const WorkLogSchema = new Schema<IWorkLog>(
   { timestamps: true },
 );
 
-WorkLogSchema.index({ status: 1 });
+WorkLogSchema.index({ employee: 1 });
+WorkLogSchema.index({ project: 1 });
+WorkLogSchema.index({ date: 1 });
+WorkLogSchema.index({ employee: 1, weekStart: 1, status: 1 });
 WorkLogSchema.index(
   { employee: 1, project: 1, weekStart: 1, date: 1 },
   { unique: true },

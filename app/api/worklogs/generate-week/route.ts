@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
+import { getWeekStart } from "@/lib/utils/date.utils";
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
 import { EmployeeProfile } from "@/lib/modules/payroll/employeeProfile.model";
 
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const monday = new Date(weekStart);
+    const monday = getWeekStart(new Date(weekStart));
 
     // 🔒 Validar que no existan worklogs esa semana
     const existing = await WorkLog.findOne({

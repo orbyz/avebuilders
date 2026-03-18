@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
 import { EmployeeProfile } from "@/lib/modules/payroll/employeeProfile.model";
+import { getWeekStart } from "@/lib/utils/date.utils";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,13 +30,15 @@ export async function POST(req: NextRequest) {
     const targetDate = new Date(date);
     targetDate.setHours(0, 0, 0, 0);
 
+    const normalizedWeekStart = getWeekStart(new Date(date));
+
     const nextDay = new Date(targetDate);
     nextDay.setDate(targetDate.getDate() + 1);
 
     const existing = await WorkLog.findOne({
       employee: employeeId,
       project: projectId,
-      weekStart: new Date(weekStart),
+      weekStart: normalizedWeekStart,
       date: {
         $gte: targetDate,
         $lt: nextDay,
@@ -65,7 +68,7 @@ export async function POST(req: NextRequest) {
       employee: employeeId,
       project: projectId,
       date: targetDate,
-      weekStart: new Date(weekStart),
+      weekStart: normalizedWeekStart,
       dailyRateSnapshot: profile.dailyRate,
       status: "open",
     });
