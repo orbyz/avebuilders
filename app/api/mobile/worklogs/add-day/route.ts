@@ -29,11 +29,16 @@ export async function POST(req: NextRequest) {
     const targetDate = new Date(date);
     targetDate.setHours(0, 0, 0, 0);
 
+    const nextDay = new Date(targetDate);
+    nextDay.setDate(targetDate.getDate() + 1);
+
     const existing = await WorkLog.findOne({
       employee: employeeId,
+      project: projectId,
+      weekStart: new Date(weekStart),
       date: {
         $gte: targetDate,
-        $lt: new Date(targetDate.getTime() + 24 * 60 * 60 * 1000),
+        $lt: nextDay,
       },
     });
 
@@ -59,7 +64,7 @@ export async function POST(req: NextRequest) {
     const log = await WorkLog.create({
       employee: employeeId,
       project: projectId,
-      date: new Date(date),
+      date: targetDate,
       weekStart: new Date(weekStart),
       dailyRateSnapshot: profile.dailyRate,
       status: "open",
