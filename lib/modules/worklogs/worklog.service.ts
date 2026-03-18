@@ -8,9 +8,15 @@ export async function getWeekWorklogs(employeeId: string, weekStart: Date) {
     employeeId,
     weekStart,
   });
+  const end = new Date(start);
+  end.setDate(start.getDate() + 7);
+
   const logs = await WorkLog.find({
     employee: employeeId,
-    weekStart: start,
+    weekStart: {
+      $gte: start,
+      $lt: end,
+    },
   })
     .populate("employee", "name")
     .populate("project", "name")
@@ -18,6 +24,7 @@ export async function getWeekWorklogs(employeeId: string, weekStart: Date) {
     .lean();
 
   console.log("LOGS FOUND:", logs.length);
+
   if (!logs.length) {
     throw new Error("Semana no encontrada");
   }
