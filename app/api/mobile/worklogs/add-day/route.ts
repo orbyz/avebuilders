@@ -26,9 +26,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
     }
 
+    const targetDate = new Date(date);
+    targetDate.setHours(0, 0, 0, 0);
+
     const existing = await WorkLog.findOne({
       employee: employeeId,
-      date: new Date(date),
+      date: {
+        $gte: targetDate,
+        $lt: new Date(targetDate.getTime() + 24 * 60 * 60 * 1000),
+      },
     });
 
     if (existing) {
