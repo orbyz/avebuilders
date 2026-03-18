@@ -1,0 +1,39 @@
+import { WorkLog } from "@/lib/modules/payroll/worklog.model";
+
+export async function getWeekWorklogs(employeeId: string, weekStart: Date) {
+  const start = new Date(weekStart);
+  start.setHours(0, 0, 0, 0);
+
+  const logs = await WorkLog.find({
+    employee: employeeId,
+    weekStart: start,
+  })
+    .populate("employee", "name")
+    .populate("project", "name")
+    .sort({ date: 1 })
+    .lean();
+
+  if (!logs.length) {
+    throw new Error("Semana no encontrada");
+  }
+
+  const days = logs.map((log: any) => ({
+    id: log._id,
+    date: log.date,
+    rate: log.dailyRateSnapshot,
+    status: log.status,
+  }));
+
+  const total = logs.reduce(
+    (sum: number, log: any) => sum + log.dailyRateSnapshot,
+    0,
+  );
+
+  return {
+    employee: logs[0].employee,
+    project: logs[0].project,
+    weekStart: start,
+    days,
+    total,
+  };
+}

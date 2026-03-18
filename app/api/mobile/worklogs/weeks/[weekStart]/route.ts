@@ -3,9 +3,10 @@ import type { NextRequest } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import jwt from "jsonwebtoken";
 
-import { WorkLog } from "@/lib/modules/payroll/worklog.model";
 import User from "@/lib/modules/users/model";
 import Project from "@/lib/modules/projects/model";
+
+import { getWeekWorklogs } from "@/lib/modules/worklogs/worklog.service";
 
 export async function GET(
   req: NextRequest,
@@ -13,9 +14,12 @@ export async function GET(
 ) {
   try {
     await connectDB();
+
+    // 🔒 Registrar modelos (evita MissingSchemaError)
     User;
     Project;
 
+    // 🔐 Auth
     const authHeader = req.headers.get("authorization");
 
     if (!authHeader) {
@@ -26,71 +30,31 @@ export async function GET(
 
     jwt.verify(token, process.env.MOBILE_JWT_SECRET as string);
 
+    // 📦 Params
     const { weekStart } = await context.params;
-
-    const start = new Date(weekStart);
-    start.setHours(0, 0, 0, 0);
-
-    const end = new Date(start);
-    end.setDate(start.getDate() + 7);
 
     const employeeId = req.nextUrl.searchParams.get("employeeId");
 
-    const query: any = {
-      weekStart: start,
-    };
-
-    if (employeeId) {
-      query.employee = employeeId;
+    if (!employeeId) {
+      return NextResponse.json(
+        { error: "employeeId requerido" },
+        { status: 400 },
+      );
     }
 
-    const logs = await WorkLog.find({
-      employee: employeeId,
-      weekStart: {
-        $gte: start,
-        $lt: end,
-      },
-    })
-      .populate("employee", "name")
-      .populate("project", "name")
-      .sort({ date: 1 })
-      .lean();
+    // 🧠 LÓGICA CENTRALIZADA (service)
+    const data = await getWeekWorklogs(employeeId, new Date(weekStart));
 
-    console.log("START:", start);
-    console.log("END:", end);
-    console.log("EMPLOYEE:", employeeId);
+    return NextResponse.json(data);
+  } catch (error: any) {
+    console.error("MOBILE WEEK DETAIL ERROR:", error);
 
-    if (!logs.length) {
+    if (error.message === "Semana no encontrada") {
       return NextResponse.json(
         { error: "Semana no encontrada" },
         { status: 404 },
       );
     }
-
-    const employee = logs[0].employee;
-    const project = logs[0].project;
-
-    const days = logs.map((log: any) => ({
-      id: log._id,
-      date: log.date,
-      rate: log.dailyRateSnapshot,
-      status: log.status,
-    }));
-
-    const total = logs.reduce(
-      (sum: number, log: any) => sum + log.dailyRateSnapshot,
-      0,
-    );
-
-    return NextResponse.json({
-      employee,
-      project,
-      weekStart: start,
-      days,
-      total,
-    });
-  } catch (error) {
-    console.error("MOBILE WEEK DETAIL ERROR:", error);
 
     return NextResponse.json(
       { error: "Error obteniendo semana." },
