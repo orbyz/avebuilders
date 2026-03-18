@@ -7,6 +7,7 @@ import User from "@/lib/modules/users/model";
 import Project from "@/lib/modules/projects/model";
 
 import { getWeekWorklogs } from "@/lib/modules/worklogs/worklog.service";
+import { getWeekStart } from "@/lib/utils/date.utils";
 
 export async function GET(
   req: NextRequest,
@@ -42,8 +43,9 @@ export async function GET(
       );
     }
 
-    // 🧠 LÓGICA CENTRALIZADA (service)
-    const data = await getWeekWorklogs(employeeId, new Date(weekStart));
+    const normalizedWeekStart = getWeekStart(new Date(weekStart));
+
+    const data = await getWeekWorklogs(employeeId, normalizedWeekStart);
 
     return NextResponse.json(data);
   } catch (error: any) {

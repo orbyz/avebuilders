@@ -4,6 +4,7 @@ import connectDB from "@/lib/db/mongoose";
 import jwt from "jsonwebtoken";
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
 import { EmployeeProfile } from "@/lib/modules/payroll/employeeProfile.model";
+import { getWeekStart } from "@/lib/utils/date.utils"; // 🔥 IMPORTANTE
 
 const dayMap: Record<string, number> = {
   mon: 0,
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
 
-    // 🔐 Validar JWT mobile
+    // 🔐 Auth
     const authHeader = req.headers.get("authorization");
     if (!authHeader)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -56,10 +57,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const monday = new Date(weekStart);
+    // 🔥 NORMALIZAR SEMANA (CLAVE ABSOLUTA)
+    const monday = getWeekStart(new Date(weekStart));
 
+    // 🔥 VALIDACIÓN CORRECTA (incluye project)
     const existing = await WorkLog.findOne({
       employee: employeeId,
+      project: projectId,
       weekStart: monday,
     });
 
@@ -72,8 +76,10 @@ export async function POST(req: NextRequest) {
 
     const logsToCreate = days.map((day: string) => {
       const offset = dayMap[day];
+
       const date = new Date(monday);
       date.setDate(monday.getDate() + offset);
+      date.setHours(0, 0, 0, 0); // 🔥 evitar problemas de timezone
 
       return {
         employee: employeeId,
@@ -90,6 +96,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(created);
   } catch (error) {
     console.error("MOBILE GENERATE WEEK ERROR:", error);
+
     return NextResponse.json(
       { error: "Error generando semana." },
       { status: 500 },
