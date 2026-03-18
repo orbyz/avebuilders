@@ -44,13 +44,21 @@ export async function GET(
       query.employee = employeeId;
     }
 
-    const logs = await WorkLog.find(query)
+    const logs = await WorkLog.find({
+      employee: employeeId,
+      weekStart: {
+        $gte: start,
+        $lt: end,
+      },
+    })
       .populate("employee", "name")
       .populate("project", "name")
       .sort({ date: 1 })
       .lean();
 
-    console.log("QUERY:", query);
+    console.log("START:", start);
+    console.log("END:", end);
+    console.log("EMPLOYEE:", employeeId);
 
     if (!logs.length) {
       return NextResponse.json(
