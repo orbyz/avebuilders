@@ -66,9 +66,15 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(log);
-  } catch (error) {
-    console.error("ADD DAY ERROR:", error);
+  } catch (error: any) {
+    console.error("ADD DAY ERROR FULL:", error);
 
-    return NextResponse.json({ error: "Error creando día" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: error.message || "Error creando día",
+        stack: error.stack,
+      },
+      { status: 500 },
+    );
   }
 }
