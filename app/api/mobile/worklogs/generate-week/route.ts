@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
 import { EmployeeProfile } from "@/lib/modules/payroll/employeeProfile.model";
 import { getWeekStart } from "@/lib/utils/date.utils"; // 🔥 IMPORTANTE
+import "@/lib/modules/user/user.model";
 
 const dayMap: Record<string, number> = {
   mon: 0,
