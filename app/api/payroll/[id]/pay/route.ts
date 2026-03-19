@@ -1,8 +1,10 @@
+// app/api/mobile/payroll/pay/[id]/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
-import { PayrollBatch } from "@/lib/modules/payroll/payrollBatch.model";
-import { Payment } from "@/lib/modules/payroll/payment.model";
-import User from "@/lib/modules/users/model";
+import "@/lib/db/register.models";
+import { registerPayment } from "@/lib/services/payroll.service";
+import { verifyMobileToken } from "@/lib/auth/verifyMobileToken";
 
 export async function POST(
   req: NextRequest,
@@ -11,51 +13,32 @@ export async function POST(
   try {
     await connectDB();
 
+    const user = await verifyMobileToken(req);
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // ✅ Next 16 style
     const { id } = await context.params;
+
     const { amount, note } = await req.json();
 
     if (!amount || amount <= 0) {
       return NextResponse.json({ error: "Monto inválido." }, { status: 400 });
     }
 
-    const batch = await PayrollBatch.findById(id);
+    const updatedBatch = await registerPayment(id, amount, note);
 
-    if (amount > batch.pendingAmount) {
-      return NextResponse.json(
-        { error: "El monto supera el saldo pendiente." },
-        { status: 400 },
-      );
-    }
-    if (!batch) {
-      return NextResponse.json(
-        { error: "Nómina no encontrada." },
-        { status: 404 },
-      );
-    }
-
-    batch.paidAmount += amount;
-    batch.pendingAmount = batch.netToPay - batch.paidAmount;
-
-    if (batch.pendingAmount <= 0) {
-      batch.status = "paid";
-      batch.pendingAmount = 0;
-    } else {
-      batch.status = "partial";
-    }
-
-    await batch.save();
-
-    await Payment.create({
-      payrollBatch: batch._id,
-      amount,
-      note,
+    return NextResponse.json({
+      success: true,
+      data: updatedBatch,
     });
+  } catch (error: any) {
+    console.error("PAYROLL PAYMENT ERROR:", error);
 
-    return NextResponse.json(batch);
-  } catch (error) {
-    console.error("Error registrando pago:", error);
     return NextResponse.json(
-      { error: "Error registrando pago." },
+      { error: error.message || "Error registrando pago." },
       { status: 500 },
     );
   }

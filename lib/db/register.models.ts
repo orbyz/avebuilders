@@ -7,5 +7,4 @@ import "@/lib/modules/finance/invoice.model";
 import "@/lib/modules/leads/model";
 import "@/lib/modules/material-request/material-request.model";
 import "@/lib/modules/payroll/employeeProfile.model";
-import "@/lib/modules/payroll/payroll.model";
 import "@/lib/modules/projects/model";
