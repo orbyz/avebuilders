@@ -156,6 +156,61 @@ export async function registerPayment(
   }
 }
 
+export async function getPayrollWeeks() {
+  const result = await PayrollBatch.aggregate([
+    {
+      $group: {
+        _id: "$weekStart",
+
+        weekStart: { $first: "$weekStart" },
+        weekEnd: { $first: "$weekEnd" },
+
+        totalEmployees: { $sum: 1 },
+        totalNet: { $sum: "$netToPay" },
+        totalPaid: { $sum: "$paidAmount" },
+
+        statuses: { $push: "$status" },
+      },
+    },
+
+    {
+      $addFields: {
+        status: {
+          $cond: [
+            { $in: ["partial", "$statuses"] },
+            "partial",
+            {
+              $cond: [
+                { $not: { $in: ["generated", "$statuses"] } },
+                "paid",
+                "generated",
+              ],
+            },
+          ],
+        },
+      },
+    },
+
+    {
+      $project: {
+        _id: 0,
+        weekStart: 1,
+        weekEnd: 1,
+        totalEmployees: 1,
+        totalNet: 1,
+        totalPaid: 1,
+        status: 1,
+      },
+    },
+
+    {
+      $sort: { weekStart: -1 },
+    },
+  ]);
+
+  return result;
+}
+
 export async function markPayrollAsPaid(batchId: string) {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -221,4 +276,60 @@ export async function markPayrollAsPaid(batchId: string) {
     session.endSession();
     throw error;
   }
+}
+
+export async function getPayrollWeekDetail(weekStart: string) {
+  const startDate = new Date(weekStart);
+
+  if (isNaN(startDate.getTime())) {
+    throw new Error("Fecha inválida");
+  }
+
+  const result = await PayrollBatch.aggregate([
+    {
+      $match: {
+        weekStart: {
+          $gte: startDate,
+          $lt: new Date(startDate.getTime() + 86400000),
+        },
+      },
+    },
+
+    {
+      $lookup: {
+        from: "users",
+        localField: "employee",
+        foreignField: "_id",
+        as: "employeeData",
+      },
+    },
+
+    {
+      $unwind: "$employeeData",
+    },
+
+    {
+      $project: {
+        _id: 0,
+        employeeId: "$employee",
+
+        name: "$employeeData.name",
+
+        totalWorked: 1,
+        totalAdvance: 1,
+        netToPay: 1,
+        paidAmount: 1,
+        pendingAmount: 1,
+        status: 1,
+      },
+    },
+
+    {
+      $sort: {
+        name: 1,
+      },
+    },
+  ]);
+
+  return result;
 }
