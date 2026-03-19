@@ -2,8 +2,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
-import { getPayrollWeeks } from "@/services/payroll.service";
-import { verifyMobileToken } from "@/lib/auth/jwt";
+import { getPayrollWeeks } from "@/lib/services/payroll.service";
+import { verifyMobileToken } from "@/lib/auth/verifyMobileToken";
 
 export async function GET(req: NextRequest) {
   try {
