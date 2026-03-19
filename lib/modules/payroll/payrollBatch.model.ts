@@ -11,6 +11,7 @@ export interface IPayrollBatch {
 
   paidAmount: number;
   pendingAmount: number;
+  paidAt?: Date;
 
   status: "generated" | "partial" | "paid";
 
@@ -54,6 +55,10 @@ const PayrollBatchSchema = new Schema<IPayrollBatch>(
     paidAmount: {
       type: Number,
       default: 0,
+    },
+
+    paidAt: {
+      type: Date,
     },
 
     pendingAmount: {

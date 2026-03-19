@@ -64,6 +64,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 🔒 BLOQUEO SI SEMANA CERRADA
+    const existingLogs = await WorkLog.find({
+      employee: employeeId,
+      project: projectId,
+      weekStart: normalizedWeekStart,
+    });
+
+    const isClosed =
+      existingLogs.length > 0 &&
+      existingLogs.every((log) => log.status === "closed");
+
+    if (isClosed) {
+      return NextResponse.json(
+        { error: "Semana cerrada, no se puede modificar" },
+        { status: 400 },
+      );
+    }
+
     const log = await WorkLog.create({
       employee: employeeId,
       project: projectId,

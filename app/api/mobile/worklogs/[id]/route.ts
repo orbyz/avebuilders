@@ -25,6 +25,8 @@ export async function DELETE(
 
     const log = await WorkLog.findById(id);
 
+    const log = await WorkLog.findById(id);
+
     if (!log) {
       return NextResponse.json(
         { error: "Worklog no encontrado" },
@@ -32,9 +34,19 @@ export async function DELETE(
       );
     }
 
-    if (log.status === "closed") {
+    // 🔥 NUEVA VALIDACIÓN CORRECTA
+    const logs = await WorkLog.find({
+      employee: log.employee,
+      project: log.project,
+      weekStart: log.weekStart,
+    });
+
+    const isClosed =
+      logs.length > 0 && logs.every((l) => l.status === "closed");
+
+    if (isClosed) {
       return NextResponse.json(
-        { error: "Semana cerrada. No se puede modificar." },
+        { error: "Semana cerrada, no se puede modificar" },
         { status: 400 },
       );
     }
