@@ -25,8 +25,6 @@ export async function DELETE(
 
     const log = await WorkLog.findById(id);
 
-    const log = await WorkLog.findById(id);
-
     if (!log) {
       return NextResponse.json(
         { error: "Worklog no encontrado" },
