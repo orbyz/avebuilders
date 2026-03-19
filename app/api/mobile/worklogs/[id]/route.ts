@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import jwt from "jsonwebtoken";
 import { WorkLog } from "@/lib/modules/payroll/worklog.model";
+import "@/lib/modules/user/user.model";
 
 export async function DELETE(
   req: NextRequest,
