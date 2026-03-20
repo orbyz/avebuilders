@@ -1,11 +1,11 @@
-// app/api/mobile/payroll/receipt/[id]/route.ts
-
 import { NextRequest } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import "@/lib/db/register.models";
 import { getPayrollReceiptData } from "@/lib/services/payroll.service";
 import PDFDocument from "pdfkit";
 import { verifyMobileToken } from "@/lib/auth/verifyMobileToken";
+
+export const runtime = "nodejs";
 
 export async function GET(
   req: NextRequest,
@@ -77,7 +77,7 @@ export async function GET(
 
   const pdfBuffer = await stream;
 
-  return new Response(pdfBuffer, {
+  return new Response(Buffer.from(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename=payroll-${id}.pdf`,
