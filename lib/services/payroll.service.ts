@@ -333,3 +333,22 @@ export async function getPayrollWeekDetail(weekStart: string) {
 
   return result;
 }
+
+export async function getPayrollReceiptData(batchId: string) {
+  const batch = await PayrollBatch.findById(batchId)
+    .populate("employee", "name email")
+    .lean();
+
+  if (!batch) {
+    throw new Error("Payroll no encontrado.");
+  }
+
+  const payments = await Payment.find({
+    payrollBatch: batch._id,
+  }).sort({ paidAt: 1 });
+
+  return {
+    batch,
+    payments,
+  };
+}

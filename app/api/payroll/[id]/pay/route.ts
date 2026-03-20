@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import "@/lib/db/register.models";
 import { registerPayment } from "@/lib/services/payroll.service";
-import { verifyMobileToken } from "@/lib/auth/verifyMobileToken";
+import { getUserFromRequest } from "@/lib/auth/getUserFromRequest";
 
 export async function POST(
   req: NextRequest,
@@ -13,13 +13,16 @@ export async function POST(
   try {
     await connectDB();
 
-    const user = await verifyMobileToken(req);
+    const user = await getUserFromRequest(req);
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ✅ Next 16 style
+    if (user.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { id } = await context.params;
 
     const { amount, note } = await req.json();
