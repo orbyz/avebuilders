@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import Invoice from "@/lib/modules/finance/invoice.model";
-import { verifyMobileToken } from "@/lib/auth/verifyMobileToken";
+import { getUserFromRequest } from "@/lib/auth/getUserFromRequest";
 
 export async function PATCH(
   req: NextRequest,
@@ -12,7 +12,7 @@ export async function PATCH(
 
     const { id } = await context.params;
 
-    const user = await verifyMobileToken(req);
+    const user = await getUserFromRequest(req);
 
     if (user.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });

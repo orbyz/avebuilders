@@ -1,15 +1,19 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "./auth";
 import { verifyMobileToken } from "./verifyMobileToken";
 import { NextRequest } from "next/server";
 
 export async function getUserFromRequest(req: NextRequest) {
-  // 🔹 1. Intentar JWT (mobile)
-  const mobileUser = await verifyMobileToken(req);
-  if (mobileUser) return mobileUser;
+  // 📱 1. Mobile (JWT)
+  try {
+    const mobileUser = await verifyMobileToken(req);
+    if (mobileUser) return mobileUser;
+  } catch (_) {
+    // ignoramos error → intentamos web
+  }
 
-  // 🔹 2. Intentar sesión (web)
-  const session = await getServerSession(authOptions);
+  // 🌐 2. Web (NextAuth App Router)
+  const session = await auth();
+
   if (session?.user) return session.user;
 
   return null;

@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongoose";
 import MaterialRequest from "@/lib/modules/material-request/material-request.model";
 import Invoice from "@/lib/modules/finance/invoice.model";
-import { verifyMobileToken } from "@/lib/auth/verifyMobileToken";
+import { getUserFromRequest } from "@/lib/auth/getUserFromRequest";
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   context: { params: Promise<{ id: string }> },
 ) {
   try {
@@ -13,7 +13,7 @@ export async function POST(
 
     const { id } = await context.params;
 
-    const user = await verifyMobileToken(req);
+    const user = await getUserFromRequest(req);
 
     if (user.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });

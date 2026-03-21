@@ -7,29 +7,23 @@ export interface MobileTokenPayload {
 
 export async function verifyMobileToken(
   req: Request,
-): Promise<MobileTokenPayload> {
+): Promise<MobileTokenPayload | null> {
   const authHeader = req.headers.get("authorization");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new Error("Unauthorized");
+    return null;
   }
 
   const token = authHeader.split(" ")[1];
 
   try {
-    console.log("TOKEN RECIBIDO:", token);
-    console.log("SECRET USADO:", process.env.MOBILE_JWT_SECRET);
-
     const decoded = jwt.verify(
       token,
       process.env.MOBILE_JWT_SECRET as string,
     ) as MobileTokenPayload;
 
-    console.log("TOKEN DECODIFICADO OK");
-
     return decoded;
-  } catch (err) {
-    console.error("JWT VERIFY ERROR:", err);
-    throw new Error("Invalid token");
+  } catch {
+    return null;
   }
 }
