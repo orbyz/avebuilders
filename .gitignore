@@ -2,6 +2,7 @@
 node_modules/
 .next/
 scripts/
+package-lock.json
 
 # Variables de entorno
 .env
